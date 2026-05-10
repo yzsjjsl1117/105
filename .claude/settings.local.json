@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(py --version)",
+      "Bash(powershell -ExecutionPolicy Bypass -File \"e:\\\\Workspace\\\\105\\\\split_image.ps1\")",
+      "Bash(powershell -ExecutionPolicy Bypass -File \"e:\\\\Workspace\\\\105\\\\split_image2.ps1\")",
+      "Bash(powershell -ExecutionPolicy Bypass -File \"e:\\\\Workspace\\\\105\\\\split_image3.ps1\")",
+      "Bash(powershell -ExecutionPolicy Bypass -File \"e:\\\\Workspace\\\\105\\\\split_image4.ps1\")",
+      "Bash(powershell -ExecutionPolicy Bypass -File \"e:\\\\Workspace\\\\105\\\\split_image5.ps1\")",
+      "Bash(powershell -ExecutionPolicy Bypass -File \"e:\\\\Workspace\\\\105\\\\split_image6.ps1\")",
+      "Bash(powershell -ExecutionPolicy Bypass -File remove_logo_bg.ps1)",
+      "Bash(grep -E '\\\\.\\(png|jpg|jpeg|PNG|JPG|JPEG\\)$')",
+      "Bash(grep -E '\\\\.\\(png|jpg|jpeg|webp\\)$')",
+      "Bash(git init *)",
+      "Bash(git add *)"
+    ]
+  }
+}

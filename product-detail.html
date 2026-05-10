@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>产品详情 - 云松茶语</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: #F8F7F4;
+            color: #1A1A1A;
+            overflow-x: hidden;
+        }
+
+        /* 云纹暗纹背景 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.08;
+            background-image:
+                radial-gradient(ellipse 800px 600px at 20% 30%, rgba(45, 80, 22, 0.3) 0%, transparent 50%),
+                radial-gradient(ellipse 600px 800px at 80% 70%, rgba(45, 80, 22, 0.25) 0%, transparent 50%);
+        }
+
+        body > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .font-serif-cn {
+            font-family: 'Noto Serif SC', serif;
+        }
+
+        .font-serif-en {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* 导航栏样式 */
+        #navbar {
+            background: rgba(248, 247, 244, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 产品图片画廊 */
+        .product-gallery {
+            position: relative;
+        }
+
+        .product-gallery::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: 20px;
+            bottom: 20px;
+            background: linear-gradient(135deg, rgba(45, 80, 22, 0.1) 0%, rgba(45, 80, 22, 0.05) 100%);
+            border-radius: 1.5rem;
+            z-index: -1;
+        }
+
+        .product-gallery img {
+            transition: transform 0.5s ease;
+        }
+
+        .product-gallery:hover img {
+            transform: scale(1.02);
+        }
+
+        /* 购买按钮 */
+        .btn-buy {
+            background: linear-gradient(135deg, #2D5016 0%, #1A3A0F 100%);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-buy::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-buy:hover::before {
+            left: 100%;
+        }
+
+        .btn-buy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(45, 80, 22, 0.4);
+        }
+
+        /* 特性卡片 */
+        .feature-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(45, 80, 22, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #2D5016, #4A7C2C);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(45, 80, 22, 0.15);
+            border-color: rgba(45, 80, 22, 0.3);
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, rgba(45, 80, 22, 0.1) 0%, rgba(45, 80, 22, 0.05) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover .feature-icon {
+            background: linear-gradient(135deg, #2D5016 0%, #4A7C2C 100%);
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .feature-card:hover .feature-icon svg {
+            stroke: white;
+        }
+
+        /* 冲泡步骤 */
+        .brewing-step {
+            position: relative;
+            padding-left: 4rem;
+            transition: all 0.3s ease;
+        }
+
+        .brewing-step:hover {
+            transform: translateX(8px);
+        }
+
+        .brewing-number {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 3rem;
+            height: 3rem;
+            background: linear-gradient(135deg, #2D5016 0%, #4A7C2C 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.25rem;
+            box-shadow: 0 4px 12px rgba(45, 80, 22, 0.3);
+        }
+
+        /* 装饰线条 */
+        .decorative-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #2D5016, transparent);
+            margin: 3rem 0;
+        }
+
+        /* 淡入动画 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        /* 价格标签 */
+        .price-tag {
+            position: relative;
+            display: inline-block;
+        }
+
+        .price-tag::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: rgba(45, 80, 22, 0.1);
+            z-index: -1;
+        }
+
+        /* 玻璃态效果 */
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav id="navbar" class="fixed top-0 left-0 right-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center space-x-3 -ml-24">
+                    <img src="Source/LOGO_transparent.png" alt="云松茶语" class="h-10 w-auto">
+                    <span class="text-xl font-serif-cn font-semibold text-gray-900">云松茶语</span>
+                </a>
+
+                <!-- 返回按钮 -->
+                <a href="index.html#products" class="flex items-center space-x-2 text-gray-700 hover:text-green-800 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    <span>返回首页</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 产品详情内容 -->
+    <div class="pt-24 pb-16 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div id="product-content" class="fade-in">
+                <!-- 内容将通过JavaScript动态加载 -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 产品数据
+        const products = {
+            'huangshan-maofeng': {
+                name: '黄山毛峰',
+                englishName: 'Huangshan Maofeng',
+                price: '¥298',
+                subtitle: '中国十大名茶之一',
+                description: '黄山毛峰产于安徽省黄山一带，是中国十大名茶之一。其外形微卷，状似雀舌，绿中泛黄，银毫显露，且带有金黄色鱼叶（俗称黄金片）。',
+                image: 'Source/黄山毛峰.png',
+                features: [
+                    {
+                        icon: 'leaf',
+                        title: '外形特征',
+                        desc: '芽叶肥壮匀齐，白毫显露，形似雀舌'
+                    },
+                    {
+                        icon: 'flower',
+                        title: '香气特点',
+                        desc: '清香高长，兰花香馥郁持久'
+                    },
+                    {
+                        icon: 'droplet',
+                        title: '汤色滋味',
+                        desc: '汤色清澈明亮，滋味鲜浓醇厚，回甘明显'
+                    },
+                    {
+                        icon: 'mountain',
+                        title: '产地环境',
+                        desc: '海拔800米云雾茶园，生态环境优越'
+                    }
+                ],
+                brewing: {
+                    water: '85-90℃山泉水或纯净水',
+                    ratio: '1:50（3克茶叶配150ml水）',
+                    time: '第一泡30秒，后续每泡增加10-15秒',
+                    times: '可冲泡3-5次'
+                },
+                storage: '密封、避光、防潮、防异味，建议冷藏保存',
+                specs: '净含量：100g | 产地：安徽黄山 | 保质期：18个月'
+            },
+            'taiping-houkui': {
+                name: '太平猴魁',
+                englishName: 'Taiping Houkui',
+                price: '¥398',
+                subtitle: '绿茶之王，两叶抱一芽',
+                description: '太平猴魁产于安徽省黄山市黄山区（原太平县）一带，为尖茶之极品。其外形两叶抱芽，扁平挺直，自然舒展，白毫隐伏，有"猴魁两头尖，不散不翘不卷边"的美名。',
+                image: 'Source/太平猴魁.png',
+                features: [
+                    {
+                        icon: 'leaf',
+                        title: '外形特征',
+                        desc: '两叶抱一芽，扁平挺直，魁伟重实'
+                    },
+                    {
+                        icon: 'flower',
+                        title: '香气特点',
+                        desc: '兰香高爽，持久悠长，独特猴韵'
+                    },
+                    {
+                        icon: 'droplet',
+                        title: '汤色滋味',
+                        desc: '汤色嫩绿明亮，滋味醇厚甘甜，回味无穷'
+                    },
+                    {
+                        icon: 'mountain',
+                        title: '产地环境',
+                        desc: '黄山余脉深山峡谷，云雾缭绕，土壤肥沃'
+                    }
+                ],
+                brewing: {
+                    water: '80-85℃山泉水或纯净水',
+                    ratio: '1:50（3克茶叶配150ml水）',
+                    time: '第一泡45秒，后续每泡增加15秒',
+                    times: '可冲泡4-6次'
+                },
+                storage: '密封、避光、防潮、防异味，建议冷藏保存',
+                specs: '净含量：100g | 产地：安徽黄山 | 保质期：18个月'
+            },
+            'qimen-hongcha': {
+                name: '祁门红茶',
+                englishName: 'Keemun Black Tea',
+                price: '¥268',
+                subtitle: '世界三大高香红茶之首',
+                description: '祁门红茶简称祁红，产于安徽省祁门、东至、贵池、石台、黟县等地。祁红是世界三大高香红茶之首，有"茶中英豪"、"群芳最"的美誉，以其独特的"祁门香"闻名于世。',
+                image: 'Source/祁门红茶.png',
+                features: [
+                    {
+                        icon: 'leaf',
+                        title: '外形特征',
+                        desc: '条索紧细秀长，色泽乌润，金毫显露'
+                    },
+                    {
+                        icon: 'flower',
+                        title: '香气特点',
+                        desc: '香气馥郁持久，似果香又似兰花香，国际称之为"祁门香"'
+                    },
+                    {
+                        icon: 'droplet',
+                        title: '汤色滋味',
+                        desc: '汤色红艳明亮，滋味醇和甘甜，叶底红亮'
+                    },
+                    {
+                        icon: 'mountain',
+                        title: '产地环境',
+                        desc: '黄山支脉，气候温和，雨量充沛，土壤肥沃'
+                    }
+                ],
+                brewing: {
+                    water: '95-100℃沸水',
+                    ratio: '1:50（3克茶叶配150ml水）',
+                    time: '第一泡10-15秒，后续每泡增加5-10秒',
+                    times: '可冲泡5-7次'
+                },
+                storage: '密封、避光、防潮、防异味，常温保存即可',
+                specs: '净含量：100g | 产地：安徽祁门 | 保质期：36个月'
+            }
+        };
+
+        // 图标SVG
+        const icons = {
+            leaf: '<svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>',
+            flower: '<svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>',
+            droplet: '<svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg>',
+            mountain: '<svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>'
+        };
+
+        // 从URL获取产品ID
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id') || 'huangshan-maofeng';
+        const product = products[productId];
+
+        // 渲染产品详情
+        if (product) {
+            document.title = `${product.name} - 云松茶语`;
+            document.getElementById('product-content').innerHTML = `
+                <!-- 产品主要信息 -->
+                <div class="grid md:grid-cols-2 gap-16 mb-20">
+                    <!-- 左侧：产品图片 -->
+                    <div class="product-gallery">
+                        <div class="aspect-square rounded-2xl overflow-hidden shadow-2xl">
+                            <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+
+                    <!-- 右侧：产品信息 -->
+                    <div class="flex flex-col justify-center">
+                        <div class="mb-8">
+                            <p class="text-sm text-gray-500 mb-3 font-serif-en tracking-wider uppercase">${product.englishName}</p>
+                            <h1 class="text-5xl md:text-6xl font-serif-cn font-bold text-gray-900 mb-3">${product.name}</h1>
+                            <p class="text-xl text-green-700 font-medium">${product.subtitle}</p>
+                        </div>
+
+                        <div class="decorative-line"></div>
+
+                        <div class="mb-8">
+                            <p class="price-tag text-6xl font-bold text-green-800 mb-6">${product.price}</p>
+                            <p class="text-gray-600">${product.specs}</p>
+                        </div>
+
+                        <p class="text-gray-700 leading-relaxed mb-10 text-lg">
+                            ${product.description}
+                        </p>
+
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <button class="btn-buy text-white px-10 py-4 rounded-full text-lg font-medium cursor-pointer flex-1 relative">
+                                立即购买
+                            </button>
+                            <button class="glass-effect text-green-800 px-10 py-4 rounded-full text-lg font-medium cursor-pointer hover:bg-green-800 hover:text-white transition-all flex-1">
+                                加入购物车
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 产品特性 -->
+                <div class="mb-20">
+                    <div class="text-center mb-12">
+                        <h2 class="text-4xl font-serif-cn font-bold text-gray-900 mb-4">产品特性</h2>
+                        <div class="w-24 h-1 bg-gradient-to-r from-transparent via-green-800 to-transparent mx-auto"></div>
+                    </div>
+                    <div class="grid md:grid-cols-4 gap-8">
+                        ${product.features.map(feature => `
+                            <div class="feature-card p-8 rounded-2xl">
+                                <div class="feature-icon">
+                                    ${icons[feature.icon]}
+                                </div>
+                                <h3 class="text-xl font-serif-cn font-semibold text-gray-900 mb-3 text-center">${feature.title}</h3>
+                                <p class="text-gray-600 text-center leading-relaxed">${feature.desc}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- 冲泡方法 -->
+                <div class="mb-20">
+                    <div class="text-center mb-12">
+                        <h2 class="text-4xl font-serif-cn font-bold text-gray-900 mb-4">冲泡方法</h2>
+                        <div class="w-24 h-1 bg-gradient-to-r from-transparent via-green-800 to-transparent mx-auto"></div>
+                    </div>
+                    <div class="glass-effect rounded-3xl p-10 shadow-xl">
+                        <div class="grid md:grid-cols-2 gap-10">
+                            <div class="brewing-step">
+                                <div class="brewing-number">1</div>
+                                <h3 class="text-xl font-serif-cn font-semibold text-gray-900 mb-3">水温选择</h3>
+                                <p class="text-gray-700 text-lg">${product.brewing.water}</p>
+                            </div>
+                            <div class="brewing-step">
+                                <div class="brewing-number">2</div>
+                                <h3 class="text-xl font-serif-cn font-semibold text-gray-900 mb-3">茶水比例</h3>
+                                <p class="text-gray-700 text-lg">${product.brewing.ratio}</p>
+                            </div>
+                            <div class="brewing-step">
+                                <div class="brewing-number">3</div>
+                                <h3 class="text-xl font-serif-cn font-semibold text-gray-900 mb-3">冲泡时间</h3>
+                                <p class="text-gray-700 text-lg">${product.brewing.time}</p>
+                            </div>
+                            <div class="brewing-step">
+                                <div class="brewing-number">4</div>
+                                <h3 class="text-xl font-serif-cn font-semibold text-gray-900 mb-3">冲泡次数</h3>
+                                <p class="text-gray-700 text-lg">${product.brewing.times}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 储存方法 -->
+                <div class="glass-effect rounded-3xl p-10 shadow-xl border-l-4 border-green-800">
+                    <div class="flex items-start space-x-4">
+                        <div class="flex-shrink-0">
+                            <svg class="w-10 h-10 text-green-800" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <h2 class="text-2xl font-serif-cn font-bold text-gray-900 mb-3">储存方法</h2>
+                            <p class="text-gray-700 text-lg leading-relaxed">${product.storage}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
