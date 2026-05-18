@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getProductBySlug } from "@/lib/products";
 import type { Metadata } from "next";
 import ShopNavbar from "@/components/ShopNavbar";
+import AddToCart from "@/components/AddToCart";
 
 interface Feature {
   icon: string;
@@ -84,13 +85,25 @@ export default async function ProductDetailPage({
 
             <p className="text-gray-700 leading-relaxed mb-10 text-lg">{product.description}</p>
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button className="relative overflow-hidden bg-gradient-to-r from-green-900 to-green-800 text-white px-10 py-4 rounded-full text-lg font-medium cursor-pointer flex-1 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-green-900/40">
-                立即购买
-              </button>
-              <button className="bg-white/70 backdrop-blur-xl border border-green-800/10 text-green-800 px-10 py-4 rounded-full text-lg font-medium cursor-pointer hover:bg-green-800 hover:text-white transition-all flex-1">
-                加入购物车
-              </button>
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              <AddToCart productId={product.id} />
+              <Link
+                href="/cart"
+                style={{
+                  display: "inline-block",
+                  padding: "10px 24px",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                  background: "#fff",
+                  color: "#1a3a2a",
+                  border: "1px solid #1a3a2a",
+                  borderRadius: "6px",
+                  textAlign: "center",
+                  textDecoration: "none",
+                }}
+              >
+                查看购物车
+              </Link>
             </div>
           </div>
         </div>
