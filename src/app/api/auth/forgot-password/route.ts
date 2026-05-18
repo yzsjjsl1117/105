@@ -2,9 +2,21 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 import { validateEmail } from "@/lib/validations";
+import { sendEmail } from "@/lib/email";
+import { passwordResetTemplate } from "@/lib/email-templates";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+    const rl = await rateLimit(ip, "forgot-password");
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { success: false, error: "RATE_LIMITED", message: "请求过于频繁，请稍后重试" },
+        { status: 429 }
+      );
+    }
+
     const { email } = await request.json();
 
     const validation = validateEmail(email);
@@ -36,9 +48,14 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // TODO: 接入邮件服务发送重置链接
-    // 当前阶段，token 记录在数据库，可通过 Prisma Studio 查看
-    console.log(`Password reset link: http://localhost:105/auth/reset-password?token=${token}`);
+    const baseUrl = process.env.NEXT_PUBLIC_URL || "http://localhost:105";
+    const resetUrl = `${baseUrl}/auth/reset-password?token=${token}`;
+
+    await sendEmail({
+      to: user.email,
+      subject: "重置您的瀹岭账号密码",
+      html: passwordResetTemplate(resetUrl),
+    });
 
     return NextResponse.json({
       success: true,

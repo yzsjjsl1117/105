@@ -113,3 +113,12 @@ model ShippingAddress {
   detail    String
   isDefault Boolean @default(false)
 }
+
+model RateLimitRecord {
+  id        String   @id @default(uuid()) @db.Uuid
+  ip        String
+  action    String
+  createdAt DateTime @default(now())
+
+  @@index([ip, action, createdAt])
+}

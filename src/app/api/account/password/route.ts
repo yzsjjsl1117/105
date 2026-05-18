@@ -3,9 +3,19 @@ import bcrypt from "bcryptjs";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { validatePassword, validatePasswordMatch } from "@/lib/validations";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function PUT(request: NextRequest) {
   try {
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+    const rl = await rateLimit(ip, "change-password");
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { success: false, error: "RATE_LIMITED", message: "请求过于频繁，请稍后重试" },
+        { status: 429 }
+      );
+    }
+
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json(

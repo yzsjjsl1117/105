@@ -3,9 +3,19 @@ import bcrypt from "bcryptjs";
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { validateRegisterInput } from "@/lib/validations";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+    const rl = await rateLimit(ip, "register");
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { success: false, error: "RATE_LIMITED", message: "请求过于频繁，请稍后重试" },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
     const { name, email, password, confirmPassword, phone } = body;
 
