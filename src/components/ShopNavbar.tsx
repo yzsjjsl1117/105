@@ -29,25 +29,17 @@ export default function ShopNavbar() {
         transition: "all 0.3s ease",
       }}
     >
-      <div style={{ maxWidth: 1280, margin: "0 auto", padding: "8px 64px" }}>
+      <div style={{ maxWidth: 1280, margin: "0 auto", padding: "8px 64px 8px 44px" }}>
         <div className="flex items-center justify-between">
-          {/* 左侧：品牌 + 返回首页 */}
-          <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
-            <Link href="/" style={{ display: "flex", alignItems: "center", gap: "12px", textDecoration: "none" }}>
-              <img
-                src="/images/LOGO_transparent.png"
-                alt="瀹岭"
-                className="h-10 w-auto shrink-0"
-              />
-              <span className="text-xl font-serif-cn font-semibold text-[#1F2D24]">瀹岭</span>
-            </Link>
-            <Link
-              href="/"
-              style={{ fontSize: "14px", color: "#888", textDecoration: "none" }}
-            >
-              ← 返回首页
-            </Link>
-          </div>
+          {/* 左侧：品牌（点击返回首页） */}
+          <Link href="/" style={{ display: "flex", alignItems: "center", gap: "12px", textDecoration: "none" }}>
+            <img
+              src="/images/LOGO_transparent.png"
+              alt="瀹岭"
+              className="h-10 w-auto shrink-0"
+            />
+            <span className="text-xl font-serif-cn font-semibold text-[#1F2D24]">瀹岭</span>
+          </Link>
 
           {/* 右侧：购物车 + 登录/注册 */}
           <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
