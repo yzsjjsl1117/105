@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useSession, signOut } from "next-auth/react";
 
 const navLinks = [
   { href: "#home", label: "首页" },
@@ -12,7 +11,6 @@ const navLinks = [
 ];
 
 export default function Navbar() {
-  const { data: session } = useSession();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -69,31 +67,6 @@ export default function Navbar() {
                 {link.label}
               </a>
             ))}
-            <div style={{ display: "flex", alignItems: "center", gap: "16px", marginLeft: "8px" }}>
-              {session ? (
-                <>
-                  <Link href="/account" className="nav-link transition-colors">
-                    {session.user?.name}
-                  </Link>
-                  <button
-                    onClick={() => signOut({ callbackUrl: "/" })}
-                    className="nav-link transition-colors"
-                    style={{ fontSize: "14px", color: "#888" }}
-                  >
-                    退出
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link href="/auth/login" className="nav-link transition-colors">
-                    登录
-                  </Link>
-                  <Link href="/auth/register" className="nav-link transition-colors">
-                    注册
-                  </Link>
-                </>
-              )}
-            </div>
           </div>
 
           {/* Mobile hamburger */}
@@ -125,43 +98,6 @@ export default function Navbar() {
                 {link.label}
               </a>
             ))}
-            <div style={{ borderTop: "1px solid rgba(0,0,0,0.08)", paddingTop: "12px", display: "flex", flexDirection: "column", gap: "12px" }}>
-              {session ? (
-                <>
-                  <Link
-                    href="/account"
-                    onClick={() => setMobileOpen(false)}
-                    className="block nav-link py-2 transition-colors"
-                  >
-                    {session.user?.name}
-                  </Link>
-                  <button
-                    onClick={() => { setMobileOpen(false); signOut({ callbackUrl: "/" }); }}
-                    className="block nav-link py-2 transition-colors"
-                    style={{ textAlign: "left", fontSize: "14px", color: "#888" }}
-                  >
-                    退出
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link
-                    href="/auth/login"
-                    onClick={() => setMobileOpen(false)}
-                    className="block nav-link py-2 transition-colors"
-                  >
-                    登录
-                  </Link>
-                  <Link
-                    href="/auth/register"
-                    onClick={() => setMobileOpen(false)}
-                    className="block nav-link py-2 transition-colors"
-                  >
-                    注册
-                  </Link>
-                </>
-              )}
-            </div>
           </div>
         )}
       </div>
