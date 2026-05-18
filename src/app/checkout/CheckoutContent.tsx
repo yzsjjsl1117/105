@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
-import ShopNavbar from "@/components/ShopNavbar";
 
 interface Address {
   id: string;
@@ -69,9 +68,7 @@ export default function CheckoutContent() {
 
   if (success) {
     return (
-      <>
-        <ShopNavbar />
-        <div style={{ maxWidth: "500px", margin: "0 auto", padding: "120px 24px 48px", textAlign: "center" }}>
+      <div style={{ maxWidth: "500px", margin: "0 auto", padding: "120px 24px 48px", textAlign: "center" }}>
           <div style={{ fontSize: "48px", marginBottom: "16px" }}>✅</div>
           <h2 style={{ fontSize: "20px", fontWeight: 600, color: "#1a3a2a", marginBottom: "8px" }}>下单成功！</h2>
           <p style={{ fontSize: "14px", color: "#888", marginBottom: "8px" }}>{success}</p>
@@ -83,28 +80,22 @@ export default function CheckoutContent() {
             返回首页
           </Link>
         </div>
-      </>
     );
   }
 
   if (items.length === 0) {
     return (
-      <>
-        <ShopNavbar />
-        <div style={{ maxWidth: "500px", margin: "0 auto", padding: "120px 24px 48px", textAlign: "center" }}>
+      <div style={{ maxWidth: "500px", margin: "0 auto", padding: "120px 24px 48px", textAlign: "center" }}>
           <p style={{ fontSize: "15px", color: "#888", marginBottom: "24px" }}>没有待下单的商品</p>
           <Link href="/cart" style={{ padding: "10px 24px", background: "#1a3a2a", color: "#fff", borderRadius: "6px", fontSize: "14px", textDecoration: "none" }}>
             返回购物车
           </Link>
         </div>
-      </>
     );
   }
 
   return (
-    <>
-      <ShopNavbar />
-      <div style={{ maxWidth: "700px", margin: "0 auto", padding: "96px 24px 48px" }}>
+    <div style={{ maxWidth: "700px", margin: "0 auto", padding: "96px 24px 48px" }}>
         <h2 style={{ fontSize: "22px", fontWeight: 600, color: "#1F2D24", marginBottom: "32px" }}>确认下单</h2>
 
         {/* Shipping Address */}
@@ -159,7 +150,6 @@ export default function CheckoutContent() {
         >
           {loading ? "提交中..." : "提交订单"}
         </button>
-      </div>
-    </>
+    </div>
   );
 }

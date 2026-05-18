@@ -1,5 +1,10 @@
+import ShopLayout from "@/components/ShopLayout";
 import CartContent from "./CartContent";
 
 export default function CartPage() {
-  return <CartContent />;
+  return (
+    <ShopLayout>
+      <CartContent />
+    </ShopLayout>
+  );
 }

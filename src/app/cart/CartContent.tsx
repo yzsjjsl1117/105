@@ -2,24 +2,18 @@
 
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
-import ShopNavbar from "@/components/ShopNavbar";
 
 export default function CartContent() {
   const { items, loading, updateQuantity, removeItem, totalCount, totalPrice } = useCart();
 
   if (loading) {
     return (
-      <>
-        <ShopNavbar />
-        <div style={{ paddingTop: "80px", textAlign: "center", color: "#888" }}>加载中...</div>
-      </>
+      <div style={{ paddingTop: "80px", textAlign: "center", color: "#888" }}>加载中...</div>
     );
   }
 
   return (
-    <>
-      <ShopNavbar />
-      <div style={{ maxWidth: "900px", margin: "0 auto", padding: "96px 24px 48px" }}>
+    <div style={{ maxWidth: "900px", margin: "0 auto", padding: "96px 24px 48px" }}>
         <h2 style={{ fontSize: "22px", fontWeight: 600, color: "#1F2D24", marginBottom: "32px" }}>购物车</h2>
 
         {items.length === 0 ? (
@@ -91,7 +85,6 @@ export default function CartContent() {
             </div>
           </>
         )}
-      </div>
-    </>
+    </div>
   );
 }

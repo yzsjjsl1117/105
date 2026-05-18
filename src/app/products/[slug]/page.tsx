@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getProductBySlug } from "@/lib/products";
 import type { Metadata } from "next";
-import ShopNavbar from "@/components/ShopNavbar";
+import ShopLayout from "@/components/ShopLayout";
 import AddToCart from "@/components/AddToCart";
 
 interface Feature {
@@ -39,8 +39,7 @@ export default async function ProductDetailPage({
   const brewing = (product.brewing as unknown as Brewing) || {};
 
   return (
-    <>
-      <ShopNavbar />
+    <ShopLayout>
       <div className="pt-24 pb-16 px-6" style={{ background: "#F8F7F4" }}>
       <div className="max-w-7xl mx-auto">
         {/* 产品主体 */}
@@ -183,7 +182,7 @@ export default async function ProductDetailPage({
         </div>
       </div>
     </div>
-    </>
+    </ShopLayout>
   );
 }
 

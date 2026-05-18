@@ -1,5 +1,10 @@
+import ShopLayout from "@/components/ShopLayout";
 import CheckoutContent from "./CheckoutContent";
 
 export default function CheckoutPage() {
-  return <CheckoutContent />;
+  return (
+    <ShopLayout>
+      <CheckoutContent />
+    </ShopLayout>
+  );
 }
