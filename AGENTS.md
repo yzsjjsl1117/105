@@ -33,7 +33,7 @@
 ```
 e:\Workspace\105\
 ├── prisma/
-│   ├── schema.prisma           # 数据库 schema (10 张表)
+│   ├── schema.prisma           # 数据库 schema (11 张表)
 │   ├── seed.ts                 # 种子数据脚本
 │   ├── config.ts               # Prisma 配置
 │   └── migrations/             # 迁移文件
@@ -48,7 +48,7 @@ e:\Workspace\105\
 │   │   │   ├── ProfileForm.tsx     # 个人信息编辑
 │   │   │   ├── PasswordForm.tsx    # 修改密码
 │   │   │   ├── AddressList.tsx     # 地址管理 CRUD
-│   │   │   └── OrderList.tsx       # 订单列表（stub）
+│   │   │   └── OrderList.tsx       # 订单列表（stub → 现在可显示）
 │   │   ├── auth/
 │   │   │   ├── layout.tsx                # 认证页布局（卡片居中）
 │   │   │   ├── login/page.tsx            # 登录页
@@ -70,16 +70,37 @@ e:\Workspace\105\
 │   │   │           └── [id]/route.ts           # 单个地址 PUT/DELETE
 │   │   └── products/
 │   │       └── [slug]/
-│   │           └── page.tsx    # 产品详情页（数据库读取）
+│   │           └── page.tsx    # 产品详情页（含 AddToCart）
+│   │   ├── cart/
+│   │   │   ├── page.tsx            # 购物车页面容器
+│   │   │   └── CartContent.tsx     # 购物车列表 + 结算
+│   │   ├── checkout/
+│   │   │   ├── page.tsx            # 下单确认页容器
+│   │   │   └── CheckoutContent.tsx # 地址选择 + 清单 + 提交
+│   │   └── api/
+│   │       ├── cart/
+│   │       │   ├── route.ts              # 购物车 GET/POST/DELETE
+│   │       │   ├── [id]/route.ts         # 单条 PUT/DELETE
+│   │       │   ├── merge/route.ts        # 游客合并 POST
+│   │       │   └── resolve/route.ts      # 游客产品数据解析 POST
+│   │       └── orders/
+│   │           ├── route.ts              # 订单 POST + GET 列表
+│   │           └── [id]/route.ts         # 订单详情 GET
 │   ├── components/
-│   │   ├── Navbar.tsx          # 导航栏（桌面/移动端 + 滚动检测 + 认证状态）
+│   │   ├── Navbar.tsx          # 首页导航栏（锚点导航）
+│   │   ├── ShopNavbar.tsx      # 电商导航栏（MiniCart + 登录/注册）
+│   │   ├── ShopLayout.tsx      # 电商页包装（CartProvider + ShopNavbar）
 │   │   ├── Hero.tsx            # 首屏（视差 + 电影质感蒙版）
 │   │   ├── BrandStory.tsx      # 品牌故事（6 图轮播 + 滚轮劫持）
 │   │   ├── CraftProcess.tsx    # 制茶工艺（5 步时间线 + 图片切换）
 │   │   ├── ProductShowcase.tsx # 产品卡片陈列
 │   │   ├── Footer.tsx          # 页脚
 │   │   ├── SessionProvider.tsx # NextAuth 客户端 Provider
-│   │   └── AccountSidebar.tsx  # 个人中心左侧导航
+│   │   ├── AccountSidebar.tsx  # 个人中心左侧导航
+│   │   ├── AddToCart.tsx       # 加购组件（数量 + 按钮）
+│   │   └── MiniCart.tsx        # 迷你购物车下拉面板
+│   ├── context/
+│   │   └── CartContext.tsx      # 购物车 Context（游客/登录 Hybrid）
 │   ├── lib/
 │   │   ├── prisma.ts           # Prisma Client 单例
 │   │   ├── products.ts         # 产品数据查询函数
@@ -109,7 +130,7 @@ e:\Workspace\105\
 | User | 用户 | id, name, email, passwordHash, phone, role |
 | Category | 产品分类 | id, name, slug |
 | Product | 产品 | id, name, slug, price, images, features(JSON), brewing(JSON), stock |
-| CartItem | 购物车 | id, userId, productId, quantity |
+| CartItem | 购物车 | id, userId, productId, quantity [@@unique(userId,productId)] |
 | Order | 订单 | id, userId, status, total, paymentMethod |
 | OrderItem | 订单明细 | id, orderId, productId, quantity, price |
 | PaymentRecord | 支付记录 | id, orderId, method, amount, status, thirdPartyId |
@@ -127,18 +148,13 @@ e:\Workspace\105\
 |------|------|------|
 | 第〇阶段 | 项目初始化、Prisma、数据库、目录结构 | ✅ |
 | 第一阶段 | 页面迁移、品牌改名、组件拆分、种子数据、UI 修复 | ✅ |
-
-### ✅ 已完成
-
-| 阶段 | 内容 | 状态 |
-|------|------|------|
 | 第二阶段 | 用户系统（注册/登录/个人中心） | ✅ |
+| 第三阶段 | 购物车 + 下单 | ✅ |
 
 ### 🔜 待实施
 
 | 阶段 | 内容 | 状态 |
 |------|------|------|
-| 第三阶段 | 购物车 + 下单 | ⏳ |
 | 第四阶段 | 支付集成（微信/支付宝） | ⏳ |
 | 第五阶段 | 后台管理（商品/订单 CRUD） | ⏳ |
 | 第六阶段 | 打磨上线（响应式/SEO/部署） | ⏳ |
@@ -149,7 +165,7 @@ e:\Workspace\105\
 
 **Change 名称：** 瀹岭全栈电商平台  
 **Change 范围：** 从零搭建完整电商系统  
-**Change 状态：** 进行中（第二阶段用户系统完成）  
+**Change 状态：** 进行中（第三阶段购物车+下单完成）  
 
 ### 本次 Change 包含
 
@@ -159,7 +175,7 @@ e:\Workspace\105\
 - ✅ 数据库设计与种子数据
 - ✅ 产品详情页动态路由
 - ✅ 用户认证系统（注册/登录/忘记密码/个人中心/地址管理）
-- ⏳ 购物车与下单
+- ✅ 购物车与下单（游客/登录双模式 + 下单流程）
 - ⏳ 微信支付 + 支付宝集成
 - ⏳ 管理后台
 - ⏳ 响应式适配与上线
@@ -296,6 +312,75 @@ GET  /api/account/orders              # 订单列表（stub，返回空数组）
 ### Tailwind CSS 4 兼容性
 - Auth 页面和 Account 页面使用内联 style 实现精确布局（输入框 320px，按钮 170px/140px）
 - 导航栏使用现有 className 模式保持一致性
+
+## 2026-05-18 购物车+下单实现记录
+
+### 购物车架构
+- **Hybrid 模式**：React Context（即时 UI）+ API（持久化）
+- 游客：localStorage 存储 + `POST /api/cart/resolve` 解析产品数据
+- 登录用户：DB（CartItem 表）+ `CartProvider` Context 管理状态
+- 登录时自动合并游客购物车到登录购物车（同产品取 max quantity）
+- CartItem 新增 `@@unique([userId, productId])` 约束 + `createdAt` 字段
+- 加购使用 `upsert` 避免 race condition，merge 支持批量合并
+
+### 新增 API 路由（6 个）
+
+```
+GET    /api/cart                     # 获取购物车（登录用户）
+POST   /api/cart                     # 加购 { productId, quantity }
+POST   /api/cart/resolve             # 游客购物车产品数据解析
+POST   /api/cart/merge               # 游客→登录购物车合并
+PUT    /api/cart/[id]                # 修改数量
+DELETE /api/cart/[id]                # 删除单条
+DELETE /api/cart                     # 清空购物车（需登录）
+POST   /api/orders                   # 创建订单（库存校验+扣减+清购物车，Prisma 事务）
+GET    /api/orders                   # 订单列表
+GET    /api/orders/[id]              # 订单详情
+```
+
+### 新增页面路由
+
+```
+/cart              → 购物车页面（列表 + 数量+/- + 删除 + 结算栏）
+/checkout          → 下单确认页（选地址 → 商品清单 → 提交 → 下单成功）
+```
+
+### 新增组件
+
+| 组件 | 用途 |
+|------|------|
+| CartContext.tsx | 购物车状态管理（Context + Provider + useCart hook） |
+| ShopLayout.tsx | 电商页统一包装（CartProvider + ShopNavbar） |
+| ShopNavbar.tsx | 电商导航栏（Logo → 首页 + 购物车图标 + 登录/注册） |
+| AddToCart.tsx | 加购组件（数量选择器 + 按钮，含加载/成功状态） |
+| MiniCart.tsx | 迷你购物车下拉面板（300px，最多 3 项，角标数量） |
+| CartContent.tsx | 购物车页面主体（表头+列表+结算栏） |
+| CheckoutContent.tsx | 下单确认页主体（地址选择+清单+提交） |
+
+### 导航栏双模式
+
+| 页面范围 | 组件 | 内容 |
+|---------|------|------|
+| 首页 | Navbar | Logo + 锚点导航（首页/品牌故事/制茶工艺/茶叶系列） |
+| 产品详情/购物车/下单/个人中心 | ShopNavbar | Logo（点击回首页）+ MiniCart（含角标）+ 登录/注册 |
+
+### 库存 & 下单流程
+- 加购物车不校验库存，下单时逐项检查 `stock >= quantity`
+- 下单使用 `prisma.$transaction` 原子执行：校验库存 → 扣减 → 创建 Order + OrderItem → 清购物车对应项
+- 库存不足返回 `OUT_OF_STOCK` 错误码 + 具体产品信息
+- 下单需选收货地址（复用 Phase 2 地址管理），未选返回 `ADDRESS_REQUIRED`
+
+### 错误码新增
+
+| 错误码 | HTTP | 场景 |
+|------|------|------|
+| `OUT_OF_STOCK` | 400 | 下单时库存不足 |
+| `ADDRESS_REQUIRED` | 400 | 下单时未选择地址 |
+| `VALIDATION_ERROR` | 400 | 数量 ≤0 或无效 |
+
+### CartItem Schema 变更
+- 添加 `createdAt DateTime @default(now())`（排序用）
+- 添加 `@@unique([userId, productId])`（防重复 + upsert 支持）
 
 ## 常用命令
 
