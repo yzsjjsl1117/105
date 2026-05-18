@@ -8,7 +8,7 @@ const cartInclude = {
   },
 };
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await auth();
 
@@ -21,25 +21,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ success: true, data: items });
     }
 
-    // Guest: read items from body, return full product info
-    const body = await request.json().catch(() => ({}));
-    const guestItems: { productId: string; quantity: number }[] = body.items || [];
-    if (guestItems.length === 0) {
-      return NextResponse.json({ success: true, data: [] });
-    }
-
-    const productIds = guestItems.map((i) => i.productId);
-    const products = await prisma.product.findMany({
-      where: { id: { in: productIds } },
-      select: { id: true, name: true, slug: true, price: true, images: true, stock: true },
-    });
-
-    const data = guestItems.map((item) => {
-      const product = products.find((p) => p.id === item.productId);
-      return { id: `guest-${item.productId}`, productId: item.productId, quantity: item.quantity, product };
-    });
-
-    return NextResponse.json({ success: true, data });
+    // 游客购物车由客户端 localStorage 管理
+    return NextResponse.json({ success: true, data: [] });
   } catch (e) {
     console.error("Get cart error:", e);
     return NextResponse.json(
@@ -55,7 +38,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { productId, quantity = 1 } = body;
 
-    if (!productId || quantity < 1) {
+    if (!productId || typeof quantity !== "number" || !Number.isInteger(quantity) || quantity < 1) {
       return NextResponse.json(
         { success: false, error: "VALIDATION_ERROR", message: "无效的商品或数量" },
         { status: 400 }
@@ -63,20 +46,11 @@ export async function POST(request: NextRequest) {
     }
 
     if (session?.user?.id) {
-      const existing = await prisma.cartItem.findFirst({
-        where: { userId: session.user.id, productId },
+      await prisma.cartItem.upsert({
+        where: { userId_productId: { userId: session.user.id, productId } },
+        update: { quantity: { increment: quantity } },
+        create: { userId: session.user.id, productId, quantity },
       });
-
-      if (existing) {
-        await prisma.cartItem.update({
-          where: { id: existing.id },
-          data: { quantity: existing.quantity + quantity },
-        });
-      } else {
-        await prisma.cartItem.create({
-          data: { userId: session.user.id, productId, quantity },
-        });
-      }
 
       const items = await prisma.cartItem.findMany({
         where: { userId: session.user.id },
@@ -86,7 +60,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: true, data: items }, { status: 201 });
     }
 
-    // Guest: return result for client to save to localStorage
+    // 游客：返回结果让客户端存 localStorage
     return NextResponse.json({
       success: true,
       data: { productId, quantity },
@@ -103,9 +77,13 @@ export async function POST(request: NextRequest) {
 export async function DELETE() {
   try {
     const session = await auth();
-    if (session?.user?.id) {
-      await prisma.cartItem.deleteMany({ where: { userId: session.user.id } });
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { success: false, error: "UNAUTHORIZED", message: "请先登录" },
+        { status: 401 }
+      );
     }
+    await prisma.cartItem.deleteMany({ where: { userId: session.user.id } });
     return NextResponse.json({ success: true, message: "购物车已清空" });
   } catch (e) {
     console.error("Clear cart error:", e);

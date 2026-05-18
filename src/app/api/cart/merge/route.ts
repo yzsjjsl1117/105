@@ -16,20 +16,15 @@ export async function POST(request: NextRequest) {
     const guestItems: { productId: string; quantity: number }[] = body.items || [];
 
     for (const item of guestItems) {
-      if (!item.productId || !item.quantity) continue;
-      const existing = await prisma.cartItem.findFirst({
-        where: { userId: session.user.id, productId: item.productId },
+      if (!item.productId || typeof item.quantity !== "number" || item.quantity < 1) continue;
+      const existing = await prisma.cartItem.findUnique({
+        where: { userId_productId: { userId: session.user.id, productId: item.productId } },
       });
-      if (existing) {
-        await prisma.cartItem.update({
-          where: { id: existing.id },
-          data: { quantity: Math.max(existing.quantity, item.quantity) },
-        });
-      } else {
-        await prisma.cartItem.create({
-          data: { userId: session.user.id, productId: item.productId, quantity: item.quantity },
-        });
-      }
+      await prisma.cartItem.upsert({
+        where: { userId_productId: { userId: session.user.id, productId: item.productId } },
+        update: { quantity: existing ? Math.max(existing.quantity, item.quantity) : item.quantity },
+        create: { userId: session.user.id, productId: item.productId, quantity: item.quantity },
+      });
     }
 
     const items = await prisma.cartItem.findMany({

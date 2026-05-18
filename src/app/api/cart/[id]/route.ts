@@ -8,26 +8,31 @@ export async function PUT(
 ) {
   try {
     const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { success: false, error: "UNAUTHORIZED", message: "请先登录" },
+        { status: 401 }
+      );
+    }
+
     const { id } = await params;
     const { quantity } = await request.json();
 
-    if (!quantity || quantity < 1) {
+    if (typeof quantity !== "number" || !Number.isInteger(quantity) || quantity < 1) {
       return NextResponse.json(
         { success: false, error: "VALIDATION_ERROR", message: "无效的数量" },
         { status: 400 }
       );
     }
 
-    if (session?.user?.id) {
-      const item = await prisma.cartItem.findUnique({ where: { id } });
-      if (!item || item.userId !== session.user.id) {
-        return NextResponse.json(
-          { success: false, error: "NOT_FOUND", message: "购物车项不存在" },
-          { status: 404 }
-        );
-      }
-      await prisma.cartItem.update({ where: { id }, data: { quantity } });
+    const item = await prisma.cartItem.findUnique({ where: { id } });
+    if (!item || item.userId !== session.user.id) {
+      return NextResponse.json(
+        { success: false, error: "NOT_FOUND", message: "购物车项不存在" },
+        { status: 404 }
+      );
     }
+    await prisma.cartItem.update({ where: { id }, data: { quantity } });
 
     return NextResponse.json({ success: true, data: { id, quantity } });
   } catch (e) {
@@ -45,18 +50,23 @@ export async function DELETE(
 ) {
   try {
     const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { success: false, error: "UNAUTHORIZED", message: "请先登录" },
+        { status: 401 }
+      );
+    }
+
     const { id } = await params;
 
-    if (session?.user?.id) {
-      const item = await prisma.cartItem.findUnique({ where: { id } });
-      if (!item || item.userId !== session.user.id) {
-        return NextResponse.json(
-          { success: false, error: "NOT_FOUND", message: "购物车项不存在" },
-          { status: 404 }
-        );
-      }
-      await prisma.cartItem.delete({ where: { id } });
+    const item = await prisma.cartItem.findUnique({ where: { id } });
+    if (!item || item.userId !== session.user.id) {
+      return NextResponse.json(
+        { success: false, error: "NOT_FOUND", message: "购物车项不存在" },
+        { status: 404 }
+      );
     }
+    await prisma.cartItem.delete({ where: { id } });
 
     return NextResponse.json({ success: true, message: "已删除" });
   } catch (e) {
