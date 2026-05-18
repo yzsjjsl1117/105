@@ -3,11 +3,12 @@ export type ValidationResult =
   | { success: false; error: string; message: string };
 
 export function validateEmail(email: string): ValidationResult {
-  if (!email || email.trim().length === 0) {
+  const trimmed = email.trim();
+  if (trimmed.length === 0) {
     return { success: false, error: "VALIDATION_ERROR", message: "请输入邮箱地址" };
   }
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!re.test(email)) {
+  if (!re.test(trimmed)) {
     return { success: false, error: "VALIDATION_ERROR", message: "请输入有效的邮箱地址" };
   }
   return { success: true };
@@ -21,10 +22,11 @@ export function validatePassword(password: string): ValidationResult {
 }
 
 export function validateName(name: string): ValidationResult {
-  if (!name || name.trim().length < 2) {
+  const trimmed = name.trim();
+  if (trimmed.length < 2) {
     return { success: false, error: "VALIDATION_ERROR", message: "用户名至少需要2个字符" };
   }
-  if (name.trim().length > 20) {
+  if (trimmed.length > 20) {
     return { success: false, error: "VALIDATION_ERROR", message: "用户名不能超过20个字符" };
   }
   return { success: true };
