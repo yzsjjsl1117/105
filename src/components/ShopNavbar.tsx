@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
+import MiniCart from "./MiniCart";
 
 export default function ShopNavbar() {
   const { data: session } = useSession();
@@ -44,12 +45,7 @@ export default function ShopNavbar() {
           {/* 右侧：购物车 + 登录/注册 */}
           <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
             {/* 购物车图标 */}
-            <Link
-              href="/cart"
-              style={{ fontSize: "22px", color: "#1F2D24", textDecoration: "none", position: "relative" }}
-            >
-              🛒
-            </Link>
+            <MiniCart />
 
             {/* 登录状态 */}
             {session ? (
