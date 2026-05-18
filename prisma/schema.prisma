@@ -51,12 +51,13 @@ model Product {
 }
 
 model CartItem {
-  id        String  @id @default(uuid()) @db.Uuid
-  userId    String  @db.Uuid
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  productId String  @db.Uuid
-  product   Product @relation(fields: [productId], references: [id])
-  quantity  Int     @default(1)
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String   @db.Uuid
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
 }
 
 model Order {
