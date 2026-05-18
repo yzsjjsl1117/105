@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getProductBySlug } from "@/lib/products";
 import type { Metadata } from "next";
+import Navbar from "@/components/Navbar";
 
 interface Feature {
   icon: string;
@@ -37,7 +38,9 @@ export default async function ProductDetailPage({
   const brewing = (product.brewing as unknown as Brewing) || {};
 
   return (
-    <div className="pt-24 pb-16 px-6" style={{ background: "#F8F7F4" }}>
+    <>
+      <Navbar />
+      <div className="pt-24 pb-16 px-6" style={{ background: "#F8F7F4" }}>
       <div className="max-w-7xl mx-auto">
         {/* 产品主体 */}
         <div className="grid md:grid-cols-2 gap-16 mb-20">
@@ -167,6 +170,7 @@ export default async function ProductDetailPage({
         </div>
       </div>
     </div>
+    </>
   );
 }
 
