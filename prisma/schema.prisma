@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String     @id @default(uuid()) @db.Uuid
+  name         String
+  email        String     @unique
+  passwordHash String
+  phone        String?
+  role         String     @default("customer")
+  createdAt    DateTime   @default(now())
+  cartItems          CartItem[]
+  orders             Order[]
+  passwordResetTokens PasswordResetToken[]
+  shippingAddresses  ShippingAddress[]
+}
+
+model Category {
+  id       String    @id @default(uuid()) @db.Uuid
+  name     String
+  slug     String    @unique
+  products Product[]
+}
+
+model Product {
+  id          String      @id @default(uuid()) @db.Uuid
+  name        String
+  slug        String      @unique
+  subtitle    String      @default("")
+  englishName String      @default("")
+  description String
+  price       Decimal
+  images      String[]
+  stock       Int         @default(0)
+  featured    Boolean     @default(false)
+  specs       String      @default("")
+  features    Json        @default("[]")
+  brewing     Json        @default("{}")
+  storage     String      @default("")
+  categoryId  String?     @db.Uuid
+  category    Category?   @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime    @default(now())
+  cartItems   CartItem[]
+  orderItems  OrderItem[]
+}
+
+model CartItem {
+  id        String  @id @default(uuid()) @db.Uuid
+  userId    String  @db.Uuid
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String  @db.Uuid
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int     @default(1)
+}
+
+model Order {
+  id            String          @id @default(uuid()) @db.Uuid
+  userId        String          @db.Uuid
+  user          User            @relation(fields: [userId], references: [id])
+  status        String          @default("pending")
+  total         Decimal
+  paymentMethod String          @default("")
+  createdAt     DateTime        @default(now())
+  items         OrderItem[]
+  payments      PaymentRecord[]
+}
+
+model OrderItem {
+  id        String  @id @default(uuid()) @db.Uuid
+  orderId   String  @db.Uuid
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String  @db.Uuid
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Decimal
+}
+
+model PaymentRecord {
+  id           String   @id @default(uuid()) @db.Uuid
+  orderId      String   @db.Uuid
+  order        Order    @relation(fields: [orderId], references: [id])
+  method       String
+  amount       Decimal
+  status       String   @default("pending")
+  thirdPartyId String   @default("")
+  createdAt    DateTime @default(now())
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model ShippingAddress {
+  id        String  @id @default(uuid()) @db.Uuid
+  userId    String  @db.Uuid
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  phone     String
+  province  String
+  city      String
+  district  String
+  detail    String
+  isDefault Boolean @default(false)
+}
