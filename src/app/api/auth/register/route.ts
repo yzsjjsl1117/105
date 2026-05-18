@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { validateRegisterInput } from "@/lib/validations";
 
@@ -13,20 +14,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(validation, { status: 400 });
     }
 
-    const existing = await prisma.user.findUnique({ where: { email } });
-    if (existing) {
-      return NextResponse.json(
-        { success: false, error: "EMAIL_TAKEN", message: "该邮箱已被注册" },
-        { status: 409 }
-      );
-    }
-
     const passwordHash = await bcrypt.hash(password, 10);
 
     const user = await prisma.user.create({
       data: {
         name: name.trim(),
-        email,
+        email: email.trim(),
         passwordHash,
         phone: phone?.trim() || null,
       },
@@ -36,7 +29,14 @@ export async function POST(request: NextRequest) {
       { success: true, data: { id: user.id, name: user.name, email: user.email } },
       { status: 201 }
     );
-  } catch {
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
+      return NextResponse.json(
+        { success: false, error: "EMAIL_TAKEN", message: "该邮箱已被注册" },
+        { status: 409 }
+      );
+    }
+    console.error("Register error:", e);
     return NextResponse.json(
       { success: false, error: "SERVER_ERROR", message: "服务器错误，请稍后重试" },
       { status: 500 }
