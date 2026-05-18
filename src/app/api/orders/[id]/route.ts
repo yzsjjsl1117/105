@@ -1,8 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-export async function GET() {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const session = await auth();
     if (!session?.user?.id) {
@@ -12,8 +15,9 @@ export async function GET() {
       );
     }
 
-    const orders = await prisma.order.findMany({
-      where: { userId: session.user.id },
+    const { id } = await params;
+    const order = await prisma.order.findUnique({
+      where: { id },
       include: {
         items: {
           include: {
@@ -21,12 +25,18 @@ export async function GET() {
           },
         },
       },
-      orderBy: { createdAt: "desc" },
     });
 
-    return NextResponse.json({ success: true, data: orders });
+    if (!order || order.userId !== session.user.id) {
+      return NextResponse.json(
+        { success: false, error: "NOT_FOUND", message: "订单不存在" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ success: true, data: order });
   } catch (e) {
-    console.error("Get orders error:", e);
+    console.error("Get order detail error:", e);
     return NextResponse.json(
       { success: false, error: "SERVER_ERROR", message: "服务器错误" },
       { status: 500 }
