@@ -32,12 +32,13 @@ export async function POST(request: NextRequest) {
 
     const passwordHash = await bcrypt.hash(password, 10);
 
-    await prisma.user.update({
-      where: { id: resetToken.userId },
-      data: { passwordHash },
-    });
-
-    await prisma.passwordResetToken.delete({ where: { id: resetToken.id } });
+    await prisma.$transaction([
+      prisma.user.update({
+        where: { id: resetToken.userId },
+        data: { passwordHash },
+      }),
+      prisma.passwordResetToken.delete({ where: { id: resetToken.id } }),
+    ]);
 
     return NextResponse.json({ success: true, message: "密码已重置，请登录" });
   } catch (e) {

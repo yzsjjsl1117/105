@@ -25,6 +25,9 @@ export async function POST(request: NextRequest) {
     const token = crypto.randomBytes(32).toString("hex");
     const expiresAt = new Date(Date.now() + 3600000); // 1小时
 
+    // 删除该用户旧的重置令牌，避免多token并存
+    await prisma.passwordResetToken.deleteMany({ where: { userId: user.id } });
+
     await prisma.passwordResetToken.create({
       data: {
         userId: user.id,
