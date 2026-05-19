@@ -18,6 +18,18 @@ const playfairDisplay = Playfair_Display({
 export const metadata: Metadata = {
   title: "瀹岭 — 云雾之间的馈赠",
   description: "瀹岭高山绿茶，源自黄山云雾深处，百年制茶传承。品质茶礼，一叶知匠心。",
+  openGraph: {
+    title: "瀹岭 — 云雾之间的馈赠",
+    description: "瀹岭高山绿茶，源自黄山云雾深处，百年制茶传承。",
+    type: "website",
+    locale: "zh_CN",
+    siteName: "瀹岭",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "瀹岭 — 云雾之间的馈赠",
+    description: "瀹岭高山绿茶，源自黄山云雾深处，百年制茶传承。",
+  },
 };
 
 export default function RootLayout({
