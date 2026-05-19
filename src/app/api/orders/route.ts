@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { cancelExpiredOrders } from "@/lib/orders";
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,9 +14,10 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { addressId, items } = body as {
+    const { addressId, items, paymentMethod } = body as {
       addressId: string;
       items: { productId: string; quantity: number }[];
+      paymentMethod?: string;
     };
 
     if (!addressId) {
@@ -71,6 +73,8 @@ export async function POST(request: NextRequest) {
         data: {
           userId: session.user.id,
           total,
+          status: "pending_payment",
+          paymentMethod: paymentMethod || "",
           items: {
             create: productUpdates.map((pu) => ({
               productId: pu.id,
@@ -88,7 +92,17 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      // 4. Clear cart items that were ordered
+      // 4. Create payment record
+      await tx.paymentRecord.create({
+        data: {
+          orderId: newOrder.id,
+          method: paymentMethod || "",
+          amount: total,
+          status: "pending",
+        },
+      });
+
+      // 5. Clear cart items that were ordered
       const productIds = items.map((i) => i.productId);
       await tx.cartItem.deleteMany({
         where: { userId: session.user.id, productId: { in: productIds } },
@@ -122,6 +136,8 @@ export async function GET() {
         { status: 401 }
       );
     }
+
+    await cancelExpiredOrders(session.user.id);
 
     const orders = await prisma.order.findMany({
       where: { userId: session.user.id },

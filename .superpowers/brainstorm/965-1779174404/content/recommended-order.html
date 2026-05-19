@@ -1,0 +1,63 @@
+<h2>推荐顺序</h2>
+<p class="subtitle">按依赖关系和效率最优排列</p>
+
+<div class="section">
+  <div class="mockup">
+    <div class="mockup-header">第一步：产品详情页 UI 重构</div>
+    <div class="mockup-body">
+      <p style="margin-top:0">核心转化页面，先把它设计好。设计时就考虑移动端布局，避免后面返工。</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>理由</h4><ul><li>产品页是用户决策的关键页面</li><li>AGENTS.md 中明确延后到现在</li><li>先设计好再适配，比分两次做好</li></ul></div>
+        <div class="cons"><h4>风险</h4><ul><li>改动最大的单页</li><li>需要视觉设计决策</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="mockup">
+    <div class="mockup-header">第二步：响应式适配</div>
+    <div class="mockup-body">
+      <p style="margin-top:0">基于新的产品详情页，全站做移动端适配。产品页不用重复做两次。</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>理由</h4><ul><li>产品页已在第一步设计好，直接适配</li><li>其他页面（购物车/结算/个人中心/后台）统一处理</li></ul></div>
+        <div class="cons"><h4>风险</h4><ul><li>涉及页面最多</li><li>Tailwind 4 的响应式方案需要确认</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="mockup">
+    <div class="mockup-header">第三步：SEO + middleware 迁移 + 部署（可并行）</div>
+    <div class="mockup-body">
+      <p style="margin-top:0">三个独立小任务，互不依赖。部署放最后——等前面的东西就绪再上线。</p>
+      <div style="display:flex;gap:16px;margin-top:12px">
+        <div style="flex:1;background:#f0f0ff;border-radius:8px;padding:12px;text-align:center">
+          <div style="font-size:24px">🔍</div>
+          <strong>SEO</strong>
+          <p style="font-size:13px;color:#666;margin:4px 0 0">metadata / og / sitemap</p>
+        </div>
+        <div style="flex:1;background:#f9f0f9;border-radius:8px;padding:12px;text-align:center">
+          <div style="font-size:24px">🔧</div>
+          <strong>proxy 迁移</strong>
+          <p style="font-size:13px;color:#666;margin:4px 0 0">middleware → proxy.ts</p>
+        </div>
+        <div style="flex:1;background:#f0f9ff;border-radius:8px;padding:12px;text-align:center">
+          <div style="font-size:24px">🚀</div>
+          <strong>Vercel 部署</strong>
+          <p style="font-size:13px;color:#666;margin:4px 0 0">环境变量 + 上线</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>这个顺序的核心逻辑</h3>
+  <p style="color:#666;font-size:14px;line-height:1.6">
+    产品详情页 → 响应式 → SEO+迁移+部署。<br><br>
+    <strong>为什么不是响应式优先？</strong>因为产品详情页是唯一需要"重设计"（不光是适配）的页面。如果先做响应式，产品详情页的适配工作在 UI 重构后会被覆盖掉，等于做两遍。<br><br>
+    <strong>为什么 SEO、proxy 迁移、部署放最后？</strong>因为这三个互不依赖，可以灵活穿插。部署放最后是自然的——前面的东西做好再上线。
+  </p>
+</div>

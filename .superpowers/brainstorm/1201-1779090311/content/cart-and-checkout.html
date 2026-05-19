@@ -1,0 +1,151 @@
+<h2>迷你购物车面板（导航栏下拉）</h2>
+<p class="subtitle">点击导航栏购物车图标弹出，300px 宽，最多显示 3 个商品</p>
+
+<div class="mockup" style="max-width:340px;margin:0 auto">
+  <div class="mockup-header">Mini-cart</div>
+  <div class="mockup-body" style="padding:12px">
+    <div style="display:flex;gap:10px;padding-bottom:10px;border-bottom:1px solid #f0f0f0;margin-bottom:10px">
+      <div style="width:48px;height:48px;background:#e8e0d5;border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:#888">图</div>
+      <div style="flex:1;min-width:0">
+        <p style="font-size:13px;margin:0 0 2px">黄山毛峰</p>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:11px;color:#888">×2</span>
+          <span style="font-size:13px;color:#8A6A42">¥596</span>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;padding-bottom:10px;border-bottom:1px solid #f0f0f0;margin-bottom:10px">
+      <div style="width:48px;height:48px;background:#e8e0d5;border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:#888">图</div>
+      <div style="flex:1;min-width:0">
+        <p style="font-size:13px;margin:0 0 2px">祁门红茶</p>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:11px;color:#888">×1</span>
+          <span style="font-size:13px;color:#8A6A42">¥268</span>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0">
+      <span style="font-size:13px;color:#666">共 2 件</span>
+      <span style="font-size:16px;font-weight:600;color:#1a3a2a">¥864</span>
+    </div>
+    <a style="display:block;text-align:center;padding:8px;background:#1a3a2a;color:#fff;border-radius:6px;font-size:13px;text-decoration:none;margin-top:8px">查看购物车 →</a>
+  </div>
+</div>
+
+<hr style="margin:40px 0;border-color:#e0e0e0">
+
+<h2>购物车页面 /cart</h2>
+<p class="subtitle">完整商品列表 + 数量调整 + 删除 + 去结算</p>
+
+<div class="mockup" style="max-width:760px">
+  <div class="mockup-header">购物车</div>
+  <div class="mockup-body" style="padding:24px 32px">
+    <!-- 表头 -->
+    <div style="display:flex;padding-bottom:12px;border-bottom:2px solid #e0e0e0;margin-bottom:16px;font-size:13px;color:#888">
+      <span style="width:48%">商品</span>
+      <span style="width:17%;text-align:center">单价</span>
+      <span style="width:17%;text-align:center">数量</span>
+      <span style="width:18%;text-align:right">小计</span>
+    </div>
+
+    <!-- 商品行 -->
+    <div style="display:flex;align-items:center;padding:16px 0;border-bottom:1px solid #f0f0f0">
+      <div style="width:48%;display:flex;align-items:center;gap:12px">
+        <div style="width:64px;height:64px;background:#e8e0d5;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:#888">产品图</div>
+        <span style="font-size:15px;color:#333">黄山毛峰</span>
+      </div>
+      <div style="width:17%;text-align:center;font-size:14px;color:#555">¥298</div>
+      <div style="width:17%;display:flex;justify-content:center;align-items:center;gap:0">
+        <button style="width:28px;height:28px;border:1px solid #d1d5db;background:#fff;border-radius:4px 0 0 4px;cursor:pointer;font-size:14px">−</button>
+        <input value="2" style="width:40px;height:28px;border:1px solid #d1d5db;border-left:none;border-right:none;text-align:center;font-size:13px;outline:none">
+        <button style="width:28px;height:28px;border:1px solid #d1d5db;background:#fff;border-radius:0 4px 4px 0;cursor:pointer;font-size:14px">+</button>
+      </div>
+      <div style="width:18%;text-align:right;font-size:15px;font-weight:600;color:#1a3a2a">¥596</div>
+    </div>
+
+    <div style="display:flex;align-items:center;padding:16px 0;border-bottom:1px solid #f0f0f0">
+      <div style="width:48%;display:flex;align-items:center;gap:12px">
+        <div style="width:64px;height:64px;background:#e8e0d5;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:#888">产品图</div>
+        <span style="font-size:15px;color:#333">祁门红茶</span>
+      </div>
+      <div style="width:17%;text-align:center;font-size:14px;color:#555">¥268</div>
+      <div style="width:17%;display:flex;justify-content:center;align-items:center;gap:0">
+        <button style="width:28px;height:28px;border:1px solid #d1d5db;background:#fff;border-radius:4px 0 0 4px;cursor:pointer;font-size:14px">−</button>
+        <input value="1" style="width:40px;height:28px;border:1px solid #d1d5db;border-left:none;border-right:none;text-align:center;font-size:13px;outline:none">
+        <button style="width:28px;height:28px;border:1px solid #d1d5db;background:#fff;border-radius:0 4px 4px 0;cursor:pointer;font-size:14px">+</button>
+      </div>
+      <div style="width:18%;text-align:right;font-size:15px;font-weight:600;color:#1a3a2a">¥268</div>
+    </div>
+
+    <!-- 底部结算栏 -->
+    <div style="display:flex;justify-content:flex-end;align-items:center;gap:24px;margin-top:24px;padding-top:16px;border-top:1px solid #e0e0e0">
+      <span style="font-size:14px;color:#666">共 <b>2</b> 件</span>
+      <span style="font-size:13px;color:#888">合计</span>
+      <span style="font-size:22px;font-weight:700;color:#1a3a2a">¥864</span>
+      <button style="padding:12px 32px;background:#1a3a2a;color:#fff;border:none;border-radius:6px;font-size:15px;font-weight:600;cursor:pointer">去结算</button>
+    </div>
+  </div>
+</div>
+
+<hr style="margin:40px 0;border-color:#e0e0e0">
+
+<h2>下单确认页 /checkout</h2>
+<p class="subtitle">三步：选地址 → 商品清单 → 确认提交</p>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header">地址 + 商品确认</div>
+    <div class="mockup-body" style="padding:24px">
+      <h4 style="font-size:14px;font-weight:600;margin:0 0 12px">收货地址</h4>
+      <div style="padding:12px;border:2px solid #1a3a2a;border-radius:6px;margin-bottom:8px;font-size:13px">
+        <b>张三</b> 138xxxx8888<br>
+        <span style="color:#888">浙江省 杭州市 西湖区 文三路 123 号</span>
+        <span style="background:#1a3a2a;color:#fff;font-size:10px;padding:2px 6px;border-radius:3px;margin-left:8px">默认</span>
+      </div>
+      <span style="font-size:12px;color:#1a3a2a;cursor:pointer">+ 新增地址</span>
+
+      <h4 style="font-size:14px;font-weight:600;margin:24px 0 12px">商品清单</h4>
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px">
+        <span>黄山毛峰 ×2</span><span style="color:#555">¥596</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px">
+        <span>祁门红茶 ×1</span><span style="color:#555">¥268</span>
+      </div>
+
+      <hr style="margin:16px 0;border-color:#e0e0e0">
+      <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:700">
+        <span>合计</span><span style="color:#1a3a2a">¥864</span>
+      </div>
+      <button style="width:100%;margin-top:24px;padding:12px;background:#1a3a2a;color:#fff;border:none;border-radius:6px;font-size:15px;font-weight:600;cursor:pointer">提交订单</button>
+    </div>
+  </div>
+
+  <div class="mockup">
+    <div class="mockup-header">下单成功</div>
+    <div class="mockup-body" style="padding:40px;text-align:center">
+      <div style="font-size:40px;margin-bottom:16px">✅</div>
+      <h3 style="margin:0 0 8px;font-size:18px;color:#1a3a2a">下单成功！</h3>
+      <p style="font-size:13px;color:#888;margin:0 0 24px">订单号：YL202605180001<br>支付功能即将上线</p>
+      <button style="padding:10px 24px;background:#1a3a2a;color:#fff;border:none;border-radius:6px;font-size:14px;cursor:pointer">查看订单</button>
+      <span style="display:block;margin-top:12px;font-size:12px;color:#888;cursor:pointer">返回首页</span>
+    </div>
+  </div>
+</div>
+
+<hr style="margin:40px 0;border-color:#e0e0e0">
+
+<h2>产品详情页加购区域</h2>
+<p class="subtitle">在 /products/[slug] 页面底部价格区域旁添加</p>
+
+<div class="mockup" style="max-width:400px">
+  <div class="mockup-header">产品详情页底部</div>
+  <div class="mockup-body" style="padding:20px;display:flex;align-items:center;gap:16px">
+    <div style="display:flex;align-items:center;gap:6px">
+      <span style="font-size:13px;color:#888">数量</span>
+      <button style="width:28px;height:28px;border:1px solid #d1d5db;background:#fff;border-radius:4px;cursor:pointer;font-size:14px">−</button>
+      <span style="font-size:15px;font-weight:600;min-width:24px;text-align:center">1</span>
+      <button style="width:28px;height:28px;border:1px solid #d1d5db;background:#fff;border-radius:4px;cursor:pointer;font-size:14px">+</button>
+    </div>
+    <button style="flex:1;padding:10px;background:#1a3a2a;color:#fff;border:none;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer">加入购物车</button>
+  </div>
+</div>

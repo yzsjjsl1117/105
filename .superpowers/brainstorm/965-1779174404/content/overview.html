@@ -1,0 +1,50 @@
+<h2>Phase 6 — 打磨上线 总览</h2>
+<p class="subtitle">从"能用"到"好用"的最后一步</p>
+
+<div class="cards">
+  <div class="card" data-choice="responsive" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:40px;text-align:center;background:#f0f9f0;">
+      <div style="font-size:48px;">📱</div>
+    </div>
+    <div class="card-body">
+      <h3>响应式适配</h3>
+      <p>全站移动端适配。当前仅3个文件用了响应式类，大部分页面用硬编码 px 宽度，手机上完全不可用。</p>
+    </div>
+  </div>
+  <div class="card" data-choice="seo" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:40px;text-align:center;background:#f0f0ff;">
+      <div style="font-size:48px;">🔍</div>
+    </div>
+    <div class="card-body">
+      <h3>SEO 优化</h3>
+      <p>全站 metadata、og:image、sitemap、robots.txt。当前仅根布局和产品详情页有基础 metadata。</p>
+    </div>
+  </div>
+  <div class="card" data-choice="product-ui" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:40px;text-align:center;background:#fef9f0;">
+      <div style="font-size:48px;">🎨</div>
+    </div>
+    <div class="card-body">
+      <h3>产品详情页 UI 重构</h3>
+      <p>信息层级重组、视觉升级。当前 Tailwind 和 inline style 混用，间距字体不一致。</p>
+    </div>
+  </div>
+  <div class="card" data-choice="deploy" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:40px;text-align:center;background:#f0f9ff;">
+      <div style="font-size:48px;">🚀</div>
+    </div>
+    <div class="card-body">
+      <h3>Vercel 部署</h3>
+      <p>生产环境部署，环境变量配置，域名绑定。当前从未部署过。</p>
+    </div>
+  </div>
+  <div class="card" data-choice="middleware" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:40px;text-align:center;background:#f9f0f9;">
+      <div style="font-size:48px;">🔧</div>
+    </div>
+    <div class="card-body">
+      <h3>middleware → proxy 迁移</h3>
+      <p>Next.js 16 弃用 middleware.ts，迁移到 proxy.ts。当前启动时有弃用警告。</p>
+    </div>
+  </div>
+</div>

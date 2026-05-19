@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { cancelExpiredOrders } from "@/lib/orders";
 
 export async function GET(
   request: NextRequest,
@@ -14,6 +15,8 @@ export async function GET(
         { status: 401 }
       );
     }
+
+    await cancelExpiredOrders(session.user.id);
 
     const { id } = await params;
     const order = await prisma.order.findUnique({

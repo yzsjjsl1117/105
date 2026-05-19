@@ -1,0 +1,74 @@
+<h2>密码重置邮件模板</h2>
+<p class="subtitle">当用户点击"忘记密码"后收到的邮件</p>
+
+<div class="mockup" style="max-width:520px">
+  <div class="mockup-header">收件箱 — 重置您的瀹岭账号密码</div>
+  <div class="mockup-body" style="padding:0;font-family:serif,sans-serif;background:#F8F7F4">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#F8F7F4;padding:48px 0">
+      <tr>
+        <td align="center">
+          <table width="480" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.08)">
+            <!-- Header -->
+            <tr>
+              <td style="background:#1a3a2a;padding:32px 40px;text-align:center">
+                <h1 style="margin:0;font-size:22px;color:#fff;font-family:serif;font-weight:600">瀹岭</h1>
+              </td>
+            </tr>
+            <!-- Body -->
+            <tr>
+              <td style="padding:40px">
+                <p style="margin:0 0 16px;font-size:15px;color:#333">您好，</p>
+                <p style="margin:0 0 24px;font-size:14px;color:#555;line-height:1.8">
+                  我们收到了您重置密码的请求。请点击下方按钮设置新密码（链接有效期 1 小时）：
+                </p>
+                <table width="100%" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td align="center">
+                      <a href="https://yueling.tea/auth/reset-password?token=abc123..."
+                         style="display:inline-block;padding:12px 40px;background:#1a3a2a;color:#fff;text-decoration:none;border-radius:6px;font-size:14px;font-weight:600">
+                        重置密码
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+                <p style="margin:24px 0 0;font-size:12px;color:#aaa">
+                  如果按钮无法点击，请复制以下链接到浏览器：<br>
+                  <span style="color:#888">https://yueling.tea/auth/reset-password?token=abc123...</span>
+                </p>
+                <hr style="border:0;border-top:1px solid #eee;margin:32px 0 16px">
+                <p style="margin:0;font-size:12px;color:#aaa;line-height:1.8">
+                  如果您没有申请重置密码，请忽略此邮件。<br>
+                  此链接 1 小时后失效，且只能使用一次。
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<hr style="margin:40px 0;border-color:#e0e0e0">
+
+<h2>开发模式降级输出</h2>
+<p class="subtitle">未配置 SMTP 时，邮件内容以格式化方式打印到终端控制台</p>
+
+<div class="mockup" style="max-width:520px">
+  <div class="mockup-header">终端输出</div>
+  <div class="mockup-body" style="background:#1a1a2e;color:#e0e0e0;font-family:monospace;font-size:12px;padding:24px">
+    <pre style="margin:0;white-space:pre-wrap">
+<i style="color:#666">──────────────────────────────</i>
+📧 <b>TO:</b> user@example.com
+📝 <b>SUBJECT:</b> 重置您的瀹岭账号密码
+<i style="color:#666">──────────────────────────────</i>
+&lt;!DOCTYPE html&gt;
+&lt;html lang="zh-CN"&gt;
+&lt;head&gt;&lt;meta charset="utf-8"&gt;&lt;/head&gt;
+&lt;body style="margin:0;..."&gt;
+  <i style="color:#888">... 完整 HTML 邮件内容 ...</i>
+&lt;/body&gt;
+&lt;/html&gt;
+<i style="color:#666">──────────────────────────────</i></pre>
+  </div>
+</div>

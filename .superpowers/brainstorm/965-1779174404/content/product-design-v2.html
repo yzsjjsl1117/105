@@ -1,0 +1,81 @@
+<h2>产品详情页 — 修订版</h2>
+<p class="subtitle">产品特性改为纵向排列，顺序：产地环境 → 外形特征 → 香气特点 → 汤色滋味</p>
+
+<div class="section">
+  <h3>整体布局结构</h3>
+  <div class="mockup">
+    <div class="mockup-header">桌面端 — 页面滚动流程</div>
+    <div class="mockup-body">
+      <div style="display:flex;flex-direction:column;gap:4px;font-size:13px;color:#666">
+
+        <div style="background:#FDF8F0;border:1px solid #e0d8c8;border-radius:6px;padding:14px;display:flex;gap:24px;align-items:center">
+          <div style="flex:1">
+            <div style="width:100%;aspect-ratio:1;background:linear-gradient(135deg,#e8dcc8,#d5c8a8);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#8B6914;font-weight:600">产品大图</div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:10px">
+            <div style="font-size:11px;color:#8B6914;text-transform:uppercase;letter-spacing:2px">English Name</div>
+            <div style="font-size:28px;font-weight:700;color:#1a3a2a;font-family:serif">产品名称</div>
+            <div style="font-size:15px;color:#5C3D2E">副标题</div>
+            <div style="width:40px;height:1px;background:#c4953a"></div>
+            <div style="font-size:32px;font-weight:700;color:#1a3a2a">¥298</div>
+            <div style="font-size:13px;color:#888">规格信息</div>
+            <div style="font-size:14px;color:#555;line-height:1.6">产品描述文字，讲述茶叶的故事...</div>
+            <div style="display:flex;gap:10px;margin-top:4px">
+              <div style="padding:8px 20px;background:#1a3a2a;color:#fff;border-radius:6px;font-size:13px;font-weight:600;text-align:center">加入购物车</div>
+              <div style="padding:8px 20px;background:#fff;color:#1a3a2a;border:1px solid #1a3a2a;border-radius:6px;font-size:13px;text-align:center">查看购物车</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align:center;padding:6px;color:#aaa">↓ 向下滚动</div>
+
+        <!-- 产品特性 — 纵向四张大图 -->
+        <div style="background:#FDF8F0;border:1px solid #e0d8c8;border-radius:6px;padding:14px">
+          <div style="text-align:center;margin-bottom:12px">
+            <div style="font-size:22px;font-weight:700;color:#1a3a2a;font-family:serif">产品特性</div>
+            <div style="width:40px;height:1px;background:#c4953a;margin:8px auto"></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="aspect-ratio:21/9;background:linear-gradient(135deg,#e8ddd0,#d5c8a8);border-radius:6px;display:flex;align-items:flex-end;padding:16px;color:#1a3a2a;font-weight:600;font-size:15px">
+              产地环境<span style="font-weight:400;font-size:13px;margin-left:8px;opacity:0.7">海拔800米云雾茶园，生态环境优越</span>
+            </div>
+            <div style="aspect-ratio:21/9;background:linear-gradient(135deg,#e0d5c0,#ccc0a0);border-radius:6px;display:flex;align-items:flex-end;padding:16px;color:#1a3a2a;font-weight:600;font-size:15px">
+              外形特征<span style="font-weight:400;font-size:13px;margin-left:8px;opacity:0.7">芽叶肥壮匀齐，白毫显露，形似雀舌</span>
+            </div>
+            <div style="aspect-ratio:21/9;background:linear-gradient(135deg,#d8cdb8,#c4b898);border-radius:6px;display:flex;align-items:flex-end;padding:16px;color:#1a3a2a;font-weight:600;font-size:15px">
+              香气特点<span style="font-weight:400;font-size:13px;margin-left:8px;opacity:0.7">清香高长，兰花香馥郁持久</span>
+            </div>
+            <div style="aspect-ratio:21/9;background:linear-gradient(135deg,#d0c4b0,#bcb090);border-radius:6px;display:flex;align-items:flex-end;padding:16px;color:#1a3a2a;font-weight:600;font-size:15px">
+              汤色滋味<span style="font-weight:400;font-size:13px;margin-left:8px;opacity:0.7">汤色清澈明亮，滋味鲜浓醇厚，回甘明显</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align:center;padding:6px;color:#aaa">↓</div>
+
+        <div style="background:#FDF8F0;border:1px solid #e0d8c8;border-radius:6px;padding:14px">
+          <div style="aspect-ratio:21/9;background:linear-gradient(135deg,#e8ddd0 0%,#d5c8a8 50%,#c8b888 100%);border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#1a3a2a">
+            <div style="font-size:22px;font-weight:700;font-family:serif;margin-bottom:8px">冲泡方法</div>
+            <div style="font-size:13px;text-align:center;line-height:1.8;max-width:400px">
+              水温 85-90℃ · 茶水比 1:50 · 第一泡 30 秒<br>可冲泡 3-5 次
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align:center;padding:6px;color:#aaa">↓</div>
+
+        <div style="background:#FDF8F0;border:1px solid #e0d8c8;border-radius:6px;padding:14px">
+          <div style="aspect-ratio:21/9;background:linear-gradient(135deg,#e0d8c4 0%,#d0c4a8 50%,#c4b890 100%);border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#1a3a2a">
+            <div style="font-size:22px;font-weight:700;font-family:serif;margin-bottom:8px">储存方法</div>
+            <div style="font-size:13px;text-align:center;max-width:400px">密封、避光、防潮、防异味，建议冷藏保存</div>
+          </div>
+        </div>
+
+        <div style="text-align:center;padding:6px">
+          <span style="color:#1a3a2a;font-size:13px">← 返回茶叶系列</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

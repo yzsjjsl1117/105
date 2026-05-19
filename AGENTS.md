@@ -77,15 +77,55 @@ e:\Workspace\105\
 │   │   ├── checkout/
 │   │   │   ├── page.tsx            # 下单确认页容器
 │   │   │   └── CheckoutContent.tsx # 地址选择 + 清单 + 提交
+│   │   ├── payment/
+│   │   │   ├── [orderId]/
+│   │   │   │   └── page.tsx           # 支付页容器
+│   │   │   ├── PaymentContent.tsx     # 支付方式选择 + 倒计时 + 操作
+│   │   │   └── success/
+│   │   │       ├── page.tsx           # 支付成功页容器
+│   │   │       └── PaymentSuccessContent.tsx
+│   │   ├── orders/
+│   │   │   └── [id]/
+│   │   │       ├── page.tsx           # 订单详情页容器
+│   │   │       └── OrderDetailClient.tsx
+│   │   ├── admin/
+│   │   │   ├── layout.tsx            # 后台布局（role 校验 + AdminNavbar）
+│   │   │   ├── page.tsx              # Dashboard 概览（4 统计卡片）
+│   │   │   ├── products/
+│   │   │   │   ├── page.tsx          # 商品列表容器
+│   │   │   │   ├── ProductList.tsx   # 商品列表表格
+│   │   │   │   ├── ProductForm.tsx   # 商品新建/编辑表单
+│   │   │   │   ├── new/page.tsx      # 新建商品
+│   │   │   │   └── [id]/edit/page.tsx # 编辑商品
+│   │   │   └── orders/
+│   │   │       ├── page.tsx          # 订单列表容器
+│   │   │       ├── AdminOrderList.tsx # 订单列表表格
+│   │   │       ├── AdminOrderDetail.tsx # 订单详情
+│   │   │       └── [id]/page.tsx     # 订单详情容器
 │   │   └── api/
 │   │       ├── cart/
 │   │       │   ├── route.ts              # 购物车 GET/POST/DELETE
 │   │       │   ├── [id]/route.ts         # 单条 PUT/DELETE
 │   │       │   ├── merge/route.ts        # 游客合并 POST
 │   │       │   └── resolve/route.ts      # 游客产品数据解析 POST
-│   │       └── orders/
-│   │           ├── route.ts              # 订单 POST + GET 列表
-│   │           └── [id]/route.ts         # 订单详情 GET
+│   │       ├── orders/
+│   │       │   ├── route.ts              # 订单 POST + GET 列表
+│   │       │   └── [id]/
+│   │       │       ├── route.ts          # 订单详情 GET
+│   │       │       └── cancel/route.ts   # 取消订单 POST
+│   │       ├── admin/
+│   │       │   ├── stats/route.ts        # 概览统计 GET
+│   │       │   ├── upload/route.ts       # 图片上传 POST
+│   │       │   ├── products/
+│   │       │   │   ├── route.ts          # 商品列表/新建 GET/POST
+│   │       │   │   └── [id]/route.ts     # 商品详情/编辑/删除 GET/PUT/DELETE
+│   │       │   └── orders/
+│   │       │       ├── route.ts          # 订单列表 GET
+│   │       │       └── [id]/
+│   │       │           ├── route.ts      # 订单详情 GET
+│   │       │           └── status/route.ts  # 状态更新 PUT
+│   │       └── payment/
+│   │           └── pay/route.ts          # 模拟支付 POST
 │   ├── components/
 │   │   ├── Navbar.tsx          # 首页导航栏（锚点导航）
 │   │   ├── ShopNavbar.tsx      # 电商导航栏（MiniCart + 登录/注册）
@@ -98,12 +138,15 @@ e:\Workspace\105\
 │   │   ├── SessionProvider.tsx # NextAuth 客户端 Provider
 │   │   ├── AccountSidebar.tsx  # 个人中心左侧导航
 │   │   ├── AddToCart.tsx       # 加购组件（数量 + 按钮）
-│   │   └── MiniCart.tsx        # 迷你购物车下拉面板
+│   │   ├── MiniCart.tsx        # 迷你购物车下拉面板
+│   │   ├── AdminNavbar.tsx     # 后台顶部导航
+│   │   └── ImageUpload.tsx     # 图片上传组件（Supabase Storage）
 │   ├── context/
 │   │   └── CartContext.tsx      # 购物车 Context（游客/登录 Hybrid）
 │   ├── lib/
 │   │   ├── prisma.ts           # Prisma Client 单例
 │   │   ├── products.ts         # 产品数据查询函数
+│   │   ├── orders.ts           # 过期订单自动取消
 │   │   ├── auth.ts             # NextAuth 配置（Credentials + JWT）
 │   │   ├── validations.ts      # 表单校验函数（8 个 validator）
 │   │   ├── email.ts            # 邮件发送封装（nodemailer）
@@ -131,7 +174,7 @@ e:\Workspace\105\
 | Category | 产品分类 | id, name, slug |
 | Product | 产品 | id, name, slug, price, images, features(JSON), brewing(JSON), stock |
 | CartItem | 购物车 | id, userId, productId, quantity [@@unique(userId,productId)] |
-| Order | 订单 | id, userId, status, total, paymentMethod |
+| Order | 订单 | id, userId, status (pending_payment/paid/shipped/completed/expired/cancelled), total, paymentMethod |
 | OrderItem | 订单明细 | id, orderId, productId, quantity, price |
 | PaymentRecord | 支付记录 | id, orderId, method, amount, status, thirdPartyId |
 | PasswordResetToken | 密码重置 | id, userId, token, expiresAt |
@@ -150,13 +193,13 @@ e:\Workspace\105\
 | 第一阶段 | 页面迁移、品牌改名、组件拆分、种子数据、UI 修复 | ✅ |
 | 第二阶段 | 用户系统（注册/登录/个人中心） | ✅ |
 | 第三阶段 | 购物车 + 下单 | ✅ |
+| 第四阶段 | 支付基础设施（模拟支付+订单生命周期） | ✅ |
+| 第五阶段 | 后台管理（商品/订单 CRUD + Dashboard + 图片上传） | ✅ |
 
 ### 🔜 待实施
 
 | 阶段 | 内容 | 状态 |
 |------|------|------|
-| 第四阶段 | 支付集成（微信/支付宝） | ⏳ |
-| 第五阶段 | 后台管理（商品/订单 CRUD） | ⏳ |
 | 第六阶段 | 打磨上线（响应式/SEO/部署 + 产品详情页 UI 重构） | ⏳ |
 
 ---
@@ -165,7 +208,7 @@ e:\Workspace\105\
 
 **Change 名称：** 瀹岭全栈电商平台  
 **Change 范围：** 从零搭建完整电商系统  
-**Change 状态：** 进行中（第三阶段购物车+下单完成）  
+**Change 状态：** 进行中（第五阶段后台管理完成）  
 
 ### 本次 Change 包含
 
@@ -176,8 +219,8 @@ e:\Workspace\105\
 - ✅ 产品详情页动态路由
 - ✅ 用户认证系统（注册/登录/忘记密码/个人中心/地址管理）
 - ✅ 购物车与下单（游客/登录双模式 + 下单流程）
-- ⏳ 微信支付 + 支付宝集成
-- ⏳ 管理后台
+- ✅ 支付基础设施（模拟支付 + 订单生命周期 + 支付页 + 订单详情 + 订单列表）
+- ✅ 管理后台（Dashboard 概览 + 商品 CRUD + 订单管理 + Supabase Storage 图片上传）
 - ⏳ 响应式适配与上线
 
 ---
@@ -385,6 +428,145 @@ GET    /api/orders/[id]              # 订单详情
 - 添加 `createdAt DateTime @default(now())`（排序用）
 - 添加 `@@unique([userId, productId])`（防重复 + upsert 支持）
 
+## 2026-05-18 支付基础设施实现记录
+
+### 支付架构
+- **路径 C — 模拟支付 + 完整基础设施**：项目暂未取得企业支付资质，先用模拟支付跑通全链路
+- 将来取得资质后，只替换 `POST /api/payment/pay` 内部实现（模拟 → 微信/支付宝 SDK），上层流程不变
+- 支付方式选择放在支付页（`/payment/[orderId]`），非结算页 — 贴近真实电商流程
+
+### 订单状态机
+
+```
+pending_payment  ← 下单时设置
+paid             ← 模拟支付成功时设置
+expired          ← 30 分钟超时自动取消
+cancelled        ← 用户手动取消
+```
+
+### 新增 API 路由（3 个）
+
+```
+POST /api/payment/pay               # 模拟支付 { orderId, method }
+POST /api/orders/[id]/cancel        # 取消订单 + 库存回滚
+```
+
+### 修改 API 路由（3 个）
+
+```
+POST /api/orders                    # status → pending_payment，事务中创建 PaymentRecord
+GET  /api/orders                    # 查询时自动取消过期订单
+GET  /api/orders/[id]               # 查询时自动取消过期订单
+```
+
+### 新增页面路由
+
+```
+/payment/[orderId]     → 支付页（支付方式选择 + 30 分钟倒计时 + 模拟支付）
+/payment/success       → 支付成功页（订单号 + 金额 + 查看订单 + 返回首页）
+/orders/[id]           → 订单详情页（状态/商品/金额/支付方式 + 操作按钮）
+```
+
+### 新增/修改组件
+
+| 组件 | 用途 |
+|------|------|
+| PaymentContent.tsx | 支付页客户端组件（支付方式选择、倒计时、支付/取消操作） |
+| PaymentSuccessContent.tsx | 支付成功内容组件 |
+| OrderDetailClient.tsx | 订单详情客户端组件（状态标签、商品列表、操作按钮） |
+| OrderList.tsx | 从空壳改为真实订单列表（筛选 tab/操作按钮） |
+
+### 新增工具函数
+
+- `src/lib/orders.ts` — `cancelExpiredOrders(userId)`：扫描并自动取消超时未支付订单
+
+### 结算/支付流程
+
+```
+/checkout 提交订单 → 跳转 /payment/[orderId]
+  → 选择支付方式（微信/支付宝）
+  → 倒计时 30 分钟内确认支付
+  → 模拟支付 API 标记 paid
+  → 跳转 /payment/success 显示结果
+```
+
+### 关键设计决策
+
+- **下单即扣库存**：茶叶小众精品，库存量小，超卖风险 > 锁库存风险
+- **超时处理**：前端倒计时归零自动调用取消 API；服务端查询时兜底扫描过期订单
+- **库存回滚**：取消/过期时在事务中 `stock += quantity`，原子执行
+- **不新增数据库表**：PaymentRecord 表已存在，字段完备
+
+### OpenSpec 归档
+
+- Change `phase4-payment-integration` 已归档至 `openspec/changes/archive/2026-05-18-phase4-payment-integration/`
+- 4 个能力规格同步至 `openspec/specs/`：`payment-flow`、`order-lifecycle`、`order-list`、`checkout`
+
+## 2026-05-19 后台管理实现记录
+
+### 管理员入口
+- 基于 User.role 字段（`customer` / `admin`），无需 schema 变更
+- 中间件轻量检查登录（`/admin/*` 未登录重定向），API 和页面层校验 role
+- 非 admin 用户访问后台返回 403
+- 管理员通过 seed 脚本创建：`admin@yueling.com` / `admin123`
+
+### 订单状态机扩展
+- 新增 `shipped`（已发货）和 `completed`（已完成）状态
+- 完整流转：`pending_payment → paid → shipped → completed`
+- 状态更新 API：`PUT /api/admin/orders/[id]/status`
+- 合法流转校验：paid → shipped / completed，shipped → completed
+- 前台订单列表和详情页已适配新状态
+
+### 图片上传
+- 方案：Supabase Storage，新增依赖 `@supabase/supabase-js`
+- 配置：`.env` 中 `SUPABASE_URL` + `SUPABASE_SERVICE_KEY`
+- 手动创建 `products` bucket（公开可读）
+- API：`POST /api/admin/upload`（限制 5MB、仅图片格式）
+
+### 后台页面路由（7 个）
+
+```
+/admin                      Dashboard 概览（4 统计卡片 + 快捷入口）
+/admin/products             商品列表（表格：缩略图/名称/价格/库存/分类）
+/admin/products/new         新建商品（含 ImageUpload）
+/admin/products/[id]/edit   编辑商品（预填数据）
+/admin/orders               订单列表（筛选 tab + 状态操作）
+/admin/orders/[id]          订单详情（状态标签 + 标记发货/完成）
+```
+
+### 后台 API 路由（10 个）
+
+```
+GET    /api/admin/stats              统计（今日订单/待处理/商品总数/近7日销售）
+POST   /api/admin/upload             图片上传（multipart/form-data）
+GET    /api/admin/products           商品列表
+POST   /api/admin/products           新建商品
+GET    /api/admin/products/[id]      商品详情（管理端）
+PUT    /api/admin/products/[id]      编辑商品
+DELETE /api/admin/products/[id]      删除商品（硬删除）
+GET    /api/admin/orders             订单列表（支持 ?status= 筛选）
+GET    /api/admin/orders/[id]        订单详情（管理端）
+PUT    /api/admin/orders/[id]/status 状态更新（shipped / completed）
+```
+
+### 新增/修改组件
+
+| 组件 | 用途 |
+|------|------|
+| AdminNavbar.tsx | 后台顶部导航（Logo + 模块切换 + 退出） |
+| ImageUpload.tsx | 图片上传（多图预览 + 删除 + 上传进度） |
+| ProductForm.tsx | 商品新建/编辑表单（含 ImageUpload、JSON 编辑） |
+| ProductList.tsx | 商品列表表格（缩略图/名称/价格/库存/操作） |
+| AdminOrderList.tsx | 订单列表表格（筛选 tab + 标记发货/完成） |
+| AdminOrderDetail.tsx | 订单详情（用户信息/商品/金额 + 状态操作按钮） |
+
+### 设计文档
+
+- `docs/superpowers/specs/2026-05-19-admin-design.md` — 后台管理设计文档
+- `docs/superpowers/plans/2026-05-19-admin-plan.md` — 后台管理实现计划（13 个 Task）
+
+---
+
 ## 常用命令
 
 ```bash
@@ -411,3 +593,18 @@ npm start            # 启动生产服务器
 3. **支付集成** 需要企业营业执照、对公账户等资质，第四阶段之前无需准备
 4. **所有 Prisma 操作** 通过 `src/lib/prisma.ts` 的单例客户端，不要直接 new PrismaClient()
 5. **种子脚本** 会清空所有数据后重新插入，仅用于开发环境
+6. **Supabase Storage** bucket `products` 需在 Supabase Dashboard 手动创建（公开可读），`.env` 中 `SUPABASE_SERVICE_KEY` 需配置
+7. **新增依赖** `@supabase/supabase-js` 用于 Storage 上传
+
+---
+
+## 待解决问题
+
+| 问题 | 说明 | 计划 |
+|------|------|------|
+| middleware 弃用警告 | Next.js 16 提示 `middleware` 已弃用，建议迁移到 `proxy.ts` | Phase 6 处理 |
+| 模拟支付 | 当前 `POST /api/payment/pay` 为模拟实现，需企业资质后对接微信/支付宝 SDK | 取得资质后替换 |
+| 产品详情页 UI | 当前仅添加 AddToCart 和 ShopNavbar，整体布局/信息层级未重构 | Phase 6 处理 |
+| 响应式适配 | 全站未做移动端适配 | Phase 6 处理 |
+| SEO | 页面缺少 metadata、og 标签等 | Phase 6 处理 |
+| 部署 | 尚未部署到 Vercel | Phase 6 处理 |
