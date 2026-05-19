@@ -2,8 +2,10 @@
 
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useBreakpoint } from "@/lib/useBreakpoint";
 
 function ResetForm() {
+  const { isMobile } = useBreakpoint();
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token") || "";
@@ -50,8 +52,8 @@ function ResetForm() {
         <p style={{ fontSize: "16px", color: "#333", fontWeight: 600 }}>设置新密码</p>
       </div>
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "14px" }}>
-        <input type="password" placeholder="新密码" value={password} onChange={(e) => setPassword(e.target.value)} required style={{ width: "320px", padding: "10px 12px", fontSize: "14px", border: "1px solid #d1d5db", borderRadius: "6px", outline: "none" }} />
-        <input type="password" placeholder="确认新密码" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required style={{ width: "320px", padding: "10px 12px", fontSize: "14px", border: "1px solid #d1d5db", borderRadius: "6px", outline: "none" }} />
+        <input type="password" placeholder="新密码" value={password} onChange={(e) => setPassword(e.target.value)} required style={{ width: isMobile ? "100%" : "320px", padding: "10px 12px", fontSize: "14px", border: "1px solid #d1d5db", borderRadius: "6px", outline: "none" }} />
+        <input type="password" placeholder="确认新密码" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required style={{ width: isMobile ? "100%" : "320px", padding: "10px 12px", fontSize: "14px", border: "1px solid #d1d5db", borderRadius: "6px", outline: "none" }} />
         {error && <p style={{ color: "#dc2626", fontSize: "13px" }}>{error}</p>}
         {success && <p style={{ color: "#16a34a", fontSize: "13px" }}>{success}</p>}
         <button type="submit" disabled={loading} style={{ width: "170px", padding: "10px", fontSize: "14px", fontWeight: 600, background: "#1a3a2a", color: "#fff", border: "none", borderRadius: "6px", cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.7 : 1 }}>

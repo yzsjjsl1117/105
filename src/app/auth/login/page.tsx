@@ -4,11 +4,13 @@ import { useState, Suspense } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { useBreakpoint } from "@/lib/useBreakpoint";
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/account";
+  const { isMobile } = useBreakpoint();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -52,7 +54,7 @@ function LoginForm() {
           onChange={(e) => setEmail(e.target.value)}
           required
           style={{
-            width: "320px", padding: "10px 12px", fontSize: "14px",
+            width: isMobile ? "100%" : "320px", padding: "10px 12px", fontSize: "14px",
             border: "1px solid #d1d5db", borderRadius: "6px", outline: "none",
           }}
         />
@@ -63,11 +65,11 @@ function LoginForm() {
           onChange={(e) => setPassword(e.target.value)}
           required
           style={{
-            width: "320px", padding: "10px 12px", fontSize: "14px",
+            width: isMobile ? "100%" : "320px", padding: "10px 12px", fontSize: "14px",
             border: "1px solid #d1d5db", borderRadius: "6px", outline: "none",
           }}
         />
-        <div style={{ width: "320px", textAlign: "right" }}>
+        <div style={{ width: isMobile ? "100%" : "320px", textAlign: "right" }}>
           <Link href="/auth/forgot-password" style={{ fontSize: "12px", color: "#888" }}>
             忘记密码？
           </Link>

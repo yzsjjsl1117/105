@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useBreakpoint } from "@/lib/useBreakpoint";
 
 export default function ForgotPasswordPage() {
+  const { isMobile } = useBreakpoint();
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -39,7 +41,7 @@ export default function ForgotPasswordPage() {
         <p style={{ fontSize: "12px", color: "#888", marginTop: "8px" }}>输入注册邮箱，我们将发送重置链接</p>
       </div>
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "14px" }}>
-        <input type="email" placeholder="邮箱地址" value={email} onChange={(e) => setEmail(e.target.value)} required style={{ width: "320px", padding: "10px 12px", fontSize: "14px", border: "1px solid #d1d5db", borderRadius: "6px", outline: "none" }} />
+        <input type="email" placeholder="邮箱地址" value={email} onChange={(e) => setEmail(e.target.value)} required style={{ width: isMobile ? "100%" : "320px", padding: "10px 12px", fontSize: "14px", border: "1px solid #d1d5db", borderRadius: "6px", outline: "none" }} />
         {error && <p style={{ color: "#dc2626", fontSize: "13px" }}>{error}</p>}
         {success && <p style={{ color: "#16a34a", fontSize: "13px" }}>{success}</p>}
         <button type="submit" disabled={loading} style={{ width: "170px", padding: "10px", fontSize: "14px", fontWeight: 600, background: "#1a3a2a", color: "#fff", border: "none", borderRadius: "6px", cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.7 : 1 }}>

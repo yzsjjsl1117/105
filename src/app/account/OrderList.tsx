@@ -92,7 +92,7 @@ export default function OrderList() {
   }
 
   return (
-    <div>
+    <div style={{ padding: isMobile ? "0" : undefined }}>
       <h3 style={{ fontSize: "16px", fontWeight: 600, marginBottom: "16px" }}>我的订单</h3>
 
       <div style={{ display: "flex", gap: "12px", marginBottom: "16px", overflowX: isMobile ? "auto" : "visible", whiteSpace: "nowrap" }}>

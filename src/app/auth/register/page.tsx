@@ -4,9 +4,11 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useBreakpoint } from "@/lib/useBreakpoint";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { isMobile } = useBreakpoint();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -56,11 +58,11 @@ export default function RegisterPage() {
         <p style={{ fontSize: "16px", color: "#333", fontWeight: 600 }}>创建账号</p>
       </div>
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "14px" }}>
-        <input type="text" placeholder="用户名" value={name} onChange={(e) => setName(e.target.value)} required style={{ width: "320px", padding: "10px 12px", fontSize: "14px", border: "1px solid #d1d5db", borderRadius: "6px", outline: "none" }} />
-        <input type="email" placeholder="邮箱地址" value={email} onChange={(e) => setEmail(e.target.value)} required style={{ width: "320px", padding: "10px 12px", fontSize: "14px", border: "1px solid #d1d5db", borderRadius: "6px", outline: "none" }} />
-        <input type="password" placeholder="密码" value={password} onChange={(e) => setPassword(e.target.value)} required style={{ width: "320px", padding: "10px 12px", fontSize: "14px", border: "1px solid #d1d5db", borderRadius: "6px", outline: "none" }} />
-        <input type="password" placeholder="确认密码" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required style={{ width: "320px", padding: "10px 12px", fontSize: "14px", border: "1px solid #d1d5db", borderRadius: "6px", outline: "none" }} />
-        <input type="tel" placeholder="手机号（选填）" value={phone} onChange={(e) => setPhone(e.target.value)} style={{ width: "320px", padding: "10px 12px", fontSize: "14px", border: "1px solid #d1d5db", borderRadius: "6px", outline: "none" }} />
+        <input type="text" placeholder="用户名" value={name} onChange={(e) => setName(e.target.value)} required style={{ width: isMobile ? "100%" : "320px", padding: "10px 12px", fontSize: "14px", border: "1px solid #d1d5db", borderRadius: "6px", outline: "none" }} />
+        <input type="email" placeholder="邮箱地址" value={email} onChange={(e) => setEmail(e.target.value)} required style={{ width: isMobile ? "100%" : "320px", padding: "10px 12px", fontSize: "14px", border: "1px solid #d1d5db", borderRadius: "6px", outline: "none" }} />
+        <input type="password" placeholder="密码" value={password} onChange={(e) => setPassword(e.target.value)} required style={{ width: isMobile ? "100%" : "320px", padding: "10px 12px", fontSize: "14px", border: "1px solid #d1d5db", borderRadius: "6px", outline: "none" }} />
+        <input type="password" placeholder="确认密码" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required style={{ width: isMobile ? "100%" : "320px", padding: "10px 12px", fontSize: "14px", border: "1px solid #d1d5db", borderRadius: "6px", outline: "none" }} />
+        <input type="tel" placeholder="手机号（选填）" value={phone} onChange={(e) => setPhone(e.target.value)} style={{ width: isMobile ? "100%" : "320px", padding: "10px 12px", fontSize: "14px", border: "1px solid #d1d5db", borderRadius: "6px", outline: "none" }} />
         {error && <p style={{ color: "#dc2626", fontSize: "13px" }}>{error}</p>}
         <button type="submit" disabled={loading} style={{ width: "170px", padding: "10px", fontSize: "14px", fontWeight: 600, background: "#1a3a2a", color: "#fff", border: "none", borderRadius: "6px", cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.7 : 1 }}>
           {loading ? "注册中..." : "注 册"}

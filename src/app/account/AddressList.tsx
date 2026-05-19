@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useBreakpoint } from "@/lib/useBreakpoint";
 
 interface Address {
   id: string;
@@ -14,6 +15,7 @@ interface Address {
 }
 
 export default function AddressList() {
+  const { isMobile } = useBreakpoint();
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState({ name: "", phone: "", province: "", city: "", district: "", detail: "", isDefault: false });
@@ -89,11 +91,11 @@ export default function AddressList() {
       </div>
 
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "20px", padding: "16px", border: "1px solid #e5e7eb", borderRadius: "8px" }}>
-        <div style={{ display: "flex", gap: "12px" }}>
+        <div style={{ display: "flex", gap: "12px", flexDirection: isMobile ? "column" : "row" }}>
           <input placeholder="收件人" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required style={{ flex: 1, padding: "8px 12px", fontSize: "14px", border: "1px solid #d1d5db", borderRadius: "6px", outline: "none" }} />
           <input placeholder="电话" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} required style={{ flex: 1, padding: "8px 12px", fontSize: "14px", border: "1px solid #d1d5db", borderRadius: "6px", outline: "none" }} />
         </div>
-        <div style={{ display: "flex", gap: "12px" }}>
+        <div style={{ display: "flex", gap: "12px", flexDirection: isMobile ? "column" : "row" }}>
           <input placeholder="省" value={form.province} onChange={(e) => setForm({ ...form, province: e.target.value })} required style={{ flex: 1, padding: "8px 12px", fontSize: "14px", border: "1px solid #d1d5db", borderRadius: "6px", outline: "none" }} />
           <input placeholder="市" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} required style={{ flex: 1, padding: "8px 12px", fontSize: "14px", border: "1px solid #d1d5db", borderRadius: "6px", outline: "none" }} />
           <input placeholder="区" value={form.district} onChange={(e) => setForm({ ...form, district: e.target.value })} required style={{ flex: 1, padding: "8px 12px", fontSize: "14px", border: "1px solid #d1d5db", borderRadius: "6px", outline: "none" }} />
