@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
+import { useBreakpoint } from "@/lib/useBreakpoint";
 
 export default function CartContent() {
   const { items, loading, updateQuantity, removeItem, totalCount, totalPrice } = useCart();
+  const { isMobile } = useBreakpoint();
 
   if (loading) {
     return (
@@ -13,7 +15,7 @@ export default function CartContent() {
   }
 
   return (
-    <div style={{ maxWidth: "900px", margin: "0 auto", padding: "96px 24px 48px" }}>
+    <div style={{ maxWidth: "900px", margin: "0 auto", padding: isMobile ? "80px 16px 24px" : "96px 24px 48px" }}>
         <h2 style={{ fontSize: "22px", fontWeight: 600, color: "#1F2D24", marginBottom: "32px" }}>购物车</h2>
 
         {items.length === 0 ? (
@@ -23,8 +25,68 @@ export default function CartContent() {
               去选购茶叶
             </Link>
           </div>
+        ) : isMobile ? (
+          <>
+            {/* Mobile: card layout */}
+            <div style={{ paddingBottom: "80px" }}>
+              {items.map((item) => (
+                <div key={item.id} style={{ display: "flex", gap: "12px", padding: "16px 0", borderBottom: "1px solid #f0f0f0" }}>
+                  <div style={{ width: "80px", height: "80px", borderRadius: "6px", overflow: "hidden", background: "#f0ebe0", flexShrink: 0 }}>
+                    {item.product?.images?.[0] && (
+                      <img src={item.product.images[0]} alt={item.product.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    )}
+                  </div>
+                  <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                    <div>
+                      <Link href={`/products/${item.product?.slug}`} style={{ fontSize: "15px", color: "#333", textDecoration: "none", fontWeight: 500 }}>
+                        {item.product?.name || "加载中..."}
+                      </Link>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <button
+                          onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                          style={{ width: "28px", height: "28px", border: "1px solid #d1d5db", background: "#fff", borderRadius: "4px 0 0 4px", cursor: "pointer", fontSize: "14px" }}
+                        >−</button>
+                        <input value={item.quantity} readOnly style={{ width: "44px", height: "28px", border: "1px solid #d1d5db", borderLeft: "none", borderRight: "none", textAlign: "center", fontSize: "13px", outline: "none" }} />
+                        <button
+                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          style={{ width: "28px", height: "28px", border: "1px solid #d1d5db", background: "#fff", borderRadius: "0 4px 4px 0", cursor: "pointer", fontSize: "14px" }}
+                        >+</button>
+                      </div>
+                      <span style={{ fontSize: "16px", fontWeight: 600, color: "#1a3a2a" }}>
+                        ¥{(Number(item.product?.price) || 0) * item.quantity}
+                      </span>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <span style={{ fontSize: "13px", color: "#888" }}>单价 ¥{Number(item.product?.price || 0)}</span>
+                      <button onClick={() => removeItem(item.id)} style={{ fontSize: "12px", color: "#999", border: "none", background: "none", cursor: "pointer" }}>删除</button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Mobile: fixed bottom checkout bar */}
+            <div style={{
+              position: "fixed", bottom: 0, left: 0, right: 0,
+              background: "#fff", borderTop: "1px solid #e0e0e0",
+              padding: "12px 16px",
+              display: "flex", justifyContent: "space-between", alignItems: "center",
+              zIndex: 100,
+            }}>
+              <div>
+                <span style={{ fontSize: "12px", color: "#888" }}>共 {totalCount} 件 </span>
+                <span style={{ fontSize: "18px", fontWeight: 700, color: "#1a3a2a" }}>¥{totalPrice}</span>
+              </div>
+              <Link href="/checkout" style={{ padding: "10px 24px", background: "#1a3a2a", color: "#fff", border: "none", borderRadius: "6px", fontSize: "15px", fontWeight: 600, textDecoration: "none" }}>
+                去结算
+              </Link>
+            </div>
+          </>
         ) : (
           <>
+            {/* Desktop: table layout */}
             {/* Header */}
             <div style={{ display: "flex", padding: "0 0 12px", borderBottom: "2px solid #e0e0e0", marginBottom: "16px", fontSize: "13px", color: "#888" }}>
               <span style={{ flex: 1 }}>商品</span>

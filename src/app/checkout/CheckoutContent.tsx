@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
+import { useBreakpoint } from "@/lib/useBreakpoint";
 
 interface Address {
   id: string;
@@ -19,11 +20,11 @@ interface Address {
 export default function CheckoutContent() {
   const router = useRouter();
   const { items, totalPrice, clearCart } = useCart();
+  const { isMobile } = useBreakpoint();
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
 
   useEffect(() => {
     fetch("/api/account/addresses")
@@ -59,33 +60,17 @@ export default function CheckoutContent() {
     setLoading(false);
 
     if (data.success) {
-      setSuccess(`订单号：${data.data.id}`);
       await clearCart();
+      router.push(`/payment/${data.data.id}`);
+      return;
     } else {
       setError(data.message);
     }
   }
 
-  if (success) {
-    return (
-      <div style={{ maxWidth: "500px", margin: "0 auto", padding: "120px 24px 48px", textAlign: "center" }}>
-          <div style={{ fontSize: "48px", marginBottom: "16px" }}>✅</div>
-          <h2 style={{ fontSize: "20px", fontWeight: 600, color: "#1a3a2a", marginBottom: "8px" }}>下单成功！</h2>
-          <p style={{ fontSize: "14px", color: "#888", marginBottom: "8px" }}>{success}</p>
-          <p style={{ fontSize: "13px", color: "#aaa", marginBottom: "24px" }}>支付功能即将上线</p>
-          <Link href="/account" style={{ padding: "10px 24px", background: "#1a3a2a", color: "#fff", borderRadius: "6px", fontSize: "14px", textDecoration: "none", display: "inline-block", marginRight: "12px" }}>
-            查看订单
-          </Link>
-          <Link href="/" style={{ padding: "10px 24px", background: "#fff", color: "#1a3a2a", border: "1px solid #1a3a2a", borderRadius: "6px", fontSize: "14px", textDecoration: "none", display: "inline-block" }}>
-            返回首页
-          </Link>
-        </div>
-    );
-  }
-
   if (items.length === 0) {
     return (
-      <div style={{ maxWidth: "500px", margin: "0 auto", padding: "120px 24px 48px", textAlign: "center" }}>
+      <div style={{ maxWidth: "500px", margin: "0 auto", padding: isMobile ? "80px 16px 24px" : "120px 24px 48px", textAlign: "center" }}>
           <p style={{ fontSize: "15px", color: "#888", marginBottom: "24px" }}>没有待下单的商品</p>
           <Link href="/cart" style={{ padding: "10px 24px", background: "#1a3a2a", color: "#fff", borderRadius: "6px", fontSize: "14px", textDecoration: "none" }}>
             返回购物车
@@ -95,7 +80,7 @@ export default function CheckoutContent() {
   }
 
   return (
-    <div style={{ maxWidth: "700px", margin: "0 auto", padding: "96px 24px 48px" }}>
+    <div style={{ maxWidth: "700px", margin: "0 auto", padding: isMobile ? "80px 16px 24px" : "96px 24px 48px" }}>
         <h2 style={{ fontSize: "22px", fontWeight: 600, color: "#1F2D24", marginBottom: "32px" }}>确认下单</h2>
 
         {/* Shipping Address */}
