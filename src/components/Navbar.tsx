@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useBreakpoint } from "@/lib/useBreakpoint";
 
 const navLinks = [
   { href: "#home", label: "首页" },
@@ -11,6 +12,7 @@ const navLinks = [
 ];
 
 export default function Navbar() {
+  const { isMobile } = useBreakpoint();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -42,7 +44,7 @@ export default function Navbar() {
         transition: "all 0.3s ease",
       }}
     >
-      <div style={{ maxWidth: 1280, margin: "0 auto", padding: "8px 64px 8px 44px" }}>
+      <div style={{ maxWidth: 1280, margin: "0 auto", padding: isMobile ? "8px 16px" : "8px 64px 8px 44px" }}>
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center" style={{ gap: 12 }}>
             <img
@@ -50,7 +52,7 @@ export default function Navbar() {
               alt="瀹岭"
               className="h-10 w-auto shrink-0"
             />
-            <span className="text-xl font-serif-cn font-semibold text-[#1F2D24]">
+            <span className="font-serif-cn font-semibold text-[#1F2D24]" style={{ fontSize: isMobile ? "16px" : "20px" }}>
               瀹岭
             </span>
           </Link>
@@ -63,6 +65,7 @@ export default function Navbar() {
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
                 className="nav-link transition-colors"
+                style={{ fontSize: isMobile ? "13px" : "15px" }}
               >
                 {link.label}
               </a>
@@ -94,6 +97,7 @@ export default function Navbar() {
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
                 className="block nav-link py-2 transition-colors"
+                style={{ fontSize: isMobile ? "14px" : "15px" }}
               >
                 {link.label}
               </a>
