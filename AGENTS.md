@@ -1011,3 +1011,48 @@ Caused by:
 | `scroll-behavior: smooth` 警告 | `layout.tsx` 添加 `data-scroll-behavior="smooth"` |
 | `value prop on input should not be null` | `ProfileForm.tsx` phone 字段 `null \|\| ""` 兜底 |
 | 产品图不显示 | 数据库 re-seed（images 字段旧中文路径 → 新 ASCII 路径） |
+
+---
+
+## 2026-05-21 Vercel 部署记录
+
+### 部署地址
+
+- 生产域名：`https://105-nine.vercel.app`
+- GitHub 仓库：`https://github.com/yzsjjsl1117/105`
+
+### 部署问题排查过程
+
+| 问题 | 原因 | 解决 |
+|------|------|------|
+| `prisma generate` 未执行 | `package.json` 缺少 `postinstall` 脚本 | 添加 `"postinstall": "prisma generate"` |
+| TypeScript 类型错误 | `onFocusCapture` 中 `as HTMLInputElement` 断言失败 | 改用 `instanceof HTMLInputElement` |
+| sitemap.xml 构建时连接数据库失败 | Vercel 构建环境无 IPv6，无法直达 Supabase | sitemap try-catch 兜底 |
+| 运行时 `Can't reach database server` | Supabase 项目仅解析到 IPv6（`2406:da18:...`），Vercel 无法路由 | 改用 Supavisor 连接池 |
+| Supavisor `Tenant or user not found` | 区域不匹配（us-east-1 vs ap-southeast-1） | 用户确认 Supabase 项目在新加坡 → `aws-1-ap-southeast-1.pooler.supabase.com` |
+| Vercel 环境变量无法修改 | 浏览器缓存 / 保存操作未完成 | 通过 `vercel env` CLI 直接修改 |
+
+### 架构决策
+
+- **本地开发**：`.env` → `DATABASE_URL` 直连 Supabase IPv6
+- **Vercel 生产**：环境变量 `DATABASE_URL` → Supavisor IPv4 连接池（`aws-1-ap-southeast-1.pooler.supabase.com:6543`）
+- **代码**：`src/lib/prisma.ts` 读取 `DATABASE_POOLER_URL || DATABASE_URL`，不硬编码任何地址
+- **Git 推送**：需通过本地代理 `127.0.0.1:7897` 连接 GitHub
+
+### Vercel 环境变量（生产）
+
+| KEY | 说明 |
+|-----|------|
+| `DATABASE_URL` | Supavisor 连接池 URL（IPv4） |
+| `AUTH_SECRET` | NextAuth JWT 签名密钥 |
+| `SUPABASE_URL` | Supabase 项目地址 |
+| `SUPABASE_SERVICE_KEY` | Supabase Storage API 密钥 |
+| `NODE_OPTIONS` | `--dns-result-order=ipv4first` |
+
+### 部署流程
+
+```
+GitHub Push → Vercel 自动检测 → npm install + prisma generate → next build → 部署
+                                                                  ↓
+                                              34 个页面全部编译通过（TypeScript 零错误）
+```
