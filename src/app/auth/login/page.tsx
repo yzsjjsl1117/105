@@ -65,15 +65,15 @@ function LoginForm() {
         onSubmit={handleSubmit}
         style={{ display: "flex", flexDirection: "column", gap: "16px" }}
         onFocusCapture={(e) => {
-          const target = e.target as HTMLInputElement;
-          if (target.tagName === "INPUT") {
+          const target = e.target;
+          if (target instanceof HTMLInputElement) {
             target.style.borderColor = "#2f5b45";
             target.style.boxShadow = "0 0 0 4px rgba(47,91,69,.08)";
           }
         }}
         onBlurCapture={(e) => {
-          const target = e.target as HTMLInputElement;
-          if (target.tagName === "INPUT") {
+          const target = e.target;
+          if (target instanceof HTMLInputElement) {
             target.style.borderColor = "rgba(31,42,36,.08)";
             target.style.boxShadow = "none";
           }
