@@ -114,7 +114,9 @@
       "Bash(curl -s --connect-timeout 2 http://127.0.0.1:1080)",
       "Bash(git config *)",
       "Bash(git pull *)",
-      "Bash(npx vercel *)"
+      "Bash(npx vercel *)",
+      "WebFetch(domain:github.com)",
+      "Bash(curl -s https://api.github.com/repos/yzsjjsl1117/105/commits/main/status)"
     ],
     "additionalDirectories": [
       "e:\\Workspace\\105\\src\\app\\api\\orders",
