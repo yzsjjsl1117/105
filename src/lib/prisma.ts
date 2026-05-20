@@ -9,7 +9,7 @@ function createPrismaClient() {
   // On Vercel, use Supavisor pooler (IPv4) instead of direct connection (IPv6)
   const isVercel = !!process.env.VERCEL;
   const connectionString = isVercel
-    ? `postgresql://postgres.evlrzamowlommqscufjx:pdSjLrtXR6H3kbOm@aws-0-us-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true`
+    ? `postgresql://postgres.evlrzamowlommqscufjx:pdSjLrtXR6H3kbOm@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres?pgbouncer=true`
     : process.env.DATABASE_URL!;
   return new PrismaClient({
     adapter: new PrismaPg({
