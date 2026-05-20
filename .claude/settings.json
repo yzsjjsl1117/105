@@ -116,7 +116,16 @@
       "Bash(git pull *)",
       "Bash(npx vercel *)",
       "WebFetch(domain:github.com)",
-      "Bash(curl -s https://api.github.com/repos/yzsjjsl1117/105/commits/main/status)"
+      "Bash(curl -s https://api.github.com/repos/yzsjjsl1117/105/commits/main/status)",
+      "Bash(curl -s https://105-syjk-rixkapssm-sowebeaton17-3512s-projects.vercel.app/products/huangshan-maofeng)",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\" https://105-syjk-rixkapssm-sowebeaton17-3512s-projects.vercel.app/products/huangshan-maofeng)",
+      "Bash(curl -s --connect-timeout 5 https://db.evlrzamowlommqscufjx.supabase.co)",
+      "Bash(nslookup db.evlrzamowlommqscufjx.supabase.co)",
+      "Bash(nslookup -type=A db.evlrzamowlommqscufjx.supabase.co)",
+      "Bash(nslookup db.evlrzamowlommqscufjx.supabase.co 8.8.8.8)",
+      "Bash(nslookup aws-0-ap-southeast-1.pooler.supabase.com 8.8.8.8)",
+      "Bash(nslookup -type=A aws-0-ap-southeast-1.pooler.supabase.com)",
+      "Bash(nslookup -type=A aws-0-us-east-1.pooler.supabase.com)"
     ],
     "additionalDirectories": [
       "e:\\Workspace\\105\\src\\app\\api\\orders",
