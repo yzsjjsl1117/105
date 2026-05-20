@@ -1,0 +1,61 @@
+/* 产品详情页海报区 */
+.product-area::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url(/images/paper-texture.png);
+  background-size: cover;
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+.poster-section {
+  position: relative;
+}
+
+.poster-wrap {
+  width: min(880px, 72vw);
+  margin: 0 auto;
+  position: relative;
+}
+
+.poster-wrap::before,
+.poster-wrap::after {
+  content: "";
+  position: absolute;
+  top: 18%;
+  width: 120px;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(177, 132, 54, .65),
+    transparent
+  );
+  box-shadow: 0 0 12px rgba(177,132,54,.18);
+}
+
+.poster-wrap::before {
+  right: calc(100% + 36px);
+}
+
+.poster-wrap::after {
+  left: calc(100% + 36px);
+}
+
+.poster-area::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: url(/images/cloud-texture.png);
+  background-size: 800px;
+  background-repeat: repeat;
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+.other-product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}

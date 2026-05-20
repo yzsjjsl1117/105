@@ -12,9 +12,9 @@ interface Product {
 
 // Static data placeholder — will be replaced with DB query in Phase 2 seed
 const products: Product[] = [
-  { id: "1", name: "黄山毛峰", slug: "huangshan-maofeng", price: "¥298", image: "/images/黄山毛峰.png" },
-  { id: "2", name: "太平猴魁", slug: "taiping-houkui", price: "¥398", image: "/images/太平猴魁.png" },
-  { id: "3", name: "祁门红茶", slug: "qimen-hongcha", price: "¥268", image: "/images/祁门红茶.png" },
+  { id: "1", name: "黄山毛峰", slug: "huangshan-maofeng", price: "¥298", image: "/images/huangshan-maofeng.png" },
+  { id: "2", name: "太平猴魁", slug: "taiping-houkui", price: "¥398", image: "/images/taiping-houkui.png" },
+  { id: "3", name: "祁门红茶", slug: "qimen-hongcha", price: "¥268", image: "/images/qimen-black-tea.png" },
 ];
 
 export default function ProductShowcase() {

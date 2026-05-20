@@ -38,7 +38,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-CN" className={`${notoSerifSC.variable} ${playfairDisplay.variable}`}>
+    <html lang="zh-CN" data-scroll-behavior="smooth" className={`${notoSerifSC.variable} ${playfairDisplay.variable}`}>
       <body className="min-h-screen">
         <SessionProvider>{children}</SessionProvider>
       </body>

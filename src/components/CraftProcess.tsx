@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import styles from "./CraftProcess.module.css";
 
 interface Step {
   num: string;
@@ -12,11 +13,11 @@ interface Step {
 }
 
 const steps: Step[] = [
-  { num: "壹", name: "采青", desc: "晨露未散，\n只取一芽一叶。", color: "#6A8B5E", image: "/images/采青.png" },
-  { num: "贰", name: "萎凋", desc: "竹匾轻摊，\n散去青涩草气。", color: "#9B8662", image: "/images/萎凋.png", imageClass: "process-image-weidiao" },
-  { num: "叁", name: "杀青", desc: "高温定香，\n锁住山野清气。", color: "#4A4A42", image: "/images/杀青.png", imageClass: "process-image-shaqing" },
-  { num: "肆", name: "揉捻", desc: "茶叶成形，\n茶汁缓缓溢出。", color: "#705844", image: "/images/揉捻.png", imageClass: "process-image-rounian" },
-  { num: "伍", name: "焙香", desc: "文火慢焙，\n余韵渐成。", color: "#B08A4A", image: "/images/焙香.png", imageClass: "process-image-beixiang" },
+  { num: "壹", name: "采青", desc: "晨露未散，\n只取一芽一叶。", color: "#6A8B5E", image: "/images/picking.png" },
+  { num: "贰", name: "萎凋", desc: "竹匾轻摊，\n散去青涩草气。", color: "#9B8662", image: "/images/withering.png", imageClass: "process-image-weidiao" },
+  { num: "叁", name: "杀青", desc: "高温定香，\n锁住山野清气。", color: "#4A4A42", image: "/images/fixing.png", imageClass: "process-image-shaqing" },
+  { num: "肆", name: "揉捻", desc: "茶叶成形，\n茶汁缓缓溢出。", color: "#705844", image: "/images/rolling.png", imageClass: "process-image-rounian" },
+  { num: "伍", name: "焙香", desc: "文火慢焙，\n余韵渐成。", color: "#B08A4A", image: "/images/baking.png", imageClass: "process-image-beixiang" },
 ];
 
 export default function CraftProcess() {
@@ -109,19 +110,19 @@ export default function CraftProcess() {
                 <div
                   key={i}
                   data-step={i + 1}
-                  className={`craft-step ${activeStep === i + 1 ? "active" : ""}`}
+                  className={`${styles["craft-step"]} ${activeStep === i + 1 ? styles.active : ""}`}
                   onMouseEnter={() => setActiveStep(i + 1)}
                 >
-                  <h3 className="font-serif-cn craft-step-title" style={{ fontSize: 22, fontWeight: 500, color: step.color, marginBottom: 4 }}>
-                    <span className="step-number craft-step-number" style={{ transition: "all 0.3s ease", width: 28, display: "inline-block" }}>
+                  <h3 className={`font-serif-cn ${styles["craft-step-title"]}`} style={{ fontSize: 22, fontWeight: 500, color: step.color, marginBottom: 4 }}>
+                    <span className={`step-number ${styles["craft-step-number"]}`} style={{ transition: "all 0.3s ease", width: 28, display: "inline-block" }}>
                       {step.num}
                     </span>
-                    <span className="step-separator" style={{ transition: "opacity 0.3s ease", margin: "0 6px" }}>·</span>
-                    <span className="step-name" style={{ transition: "all 0.3s ease", display: "inline-block" }}>
+                    <span className={styles["step-separator"]} style={{ transition: "opacity 0.3s ease", margin: "0 6px" }}>·</span>
+                    <span className={styles["step-name"]} style={{ transition: "all 0.3s ease", display: "inline-block" }}>
                       {step.name}
                     </span>
                   </h3>
-                  <p className="craft-step-desc" style={{
+                  <p className={styles["craft-step-desc"]} style={{
                     fontSize: 14, lineHeight: 1.9, color: step.color,
                     opacity: activeStep === i + 1 ? 0.75 : 0,
                     maxHeight: activeStep === i + 1 ? "100px" : 0,
@@ -146,7 +147,7 @@ export default function CraftProcess() {
                     <div
                       key={i}
                       data-step={i + 1}
-                      className={`process-image absolute inset-0`}
+                      className={`${styles["process-image"]} absolute inset-0`}
                       style={{ opacity: activeStep === i + 1 ? 1 : 0, transition: "opacity 1s ease" }}
                     >
                       <img src={step.image} alt={step.name} className="w-full h-full object-cover" />

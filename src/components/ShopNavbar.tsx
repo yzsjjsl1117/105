@@ -59,10 +59,10 @@ export default function ShopNavbar() {
                   {session.user?.name}
                 </Link>
                 <button
-                  onClick={() => signOut({ callbackUrl: "/" })}
+                  onClick={() => signOut({ redirect: false })}
                   style={{ fontSize: isMobile ? "12px" : "14px", color: "#888", background: "none", border: "none", cursor: "pointer" }}
                 >
-                  退出
+                  退出登录
                 </button>
               </div>
             ) : (

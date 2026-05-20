@@ -19,7 +19,7 @@ export default function ProfileForm() {
   useEffect(() => {
     fetch("/api/account")
       .then((r) => r.json())
-      .then((d) => { if (d.success) setProfile(d.data); });
+      .then((d) => { if (d.success) setProfile({ ...d.data, phone: d.data.phone || "" }); });
   }, []);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -46,35 +46,39 @@ export default function ProfileForm() {
 
   return (
     <div>
-      <h3 style={{ fontSize: "16px", fontWeight: 600, marginBottom: "20px" }}>基本信息</h3>
+      <h3 style={{ fontSize: "16px", fontWeight: 600, marginBottom: "20px", color: "#2b312c" }}>基本信息</h3>
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "14px", alignItems: "flex-start", width: isMobile ? "100%" : undefined }}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <span style={{ width: "60px", fontSize: "14px", color: "#666", textAlign: "center" }}>用户名</span>
+          <span style={{ width: "60px", fontSize: "14px", color: "#8d918b", textAlign: "center" }}>用户名</span>
           <input
             type="text"
             value={profile.name}
             onChange={(e) => setProfile({ ...profile, name: e.target.value })}
             required
-            style={{ width: isMobile ? "100%" : "320px", padding: "10px 12px", fontSize: "14px", border: "1px solid #d1d5db", borderRadius: "6px", outline: "none" }}
+            style={{ width: isMobile ? "100%" : "320px", height: "54px", padding: "0 16px", fontSize: "14px", background: "#fcfaf7", border: "1px solid #e8e1d8", borderRadius: "16px", outline: "none", boxSizing: "border-box" }}
+            onFocus={(e) => { e.currentTarget.style.borderColor = "#29543f"; e.currentTarget.style.boxShadow = "0 0 0 4px rgba(41,84,63,.08)"; }}
+            onBlur={(e) => { e.currentTarget.style.borderColor = "#e8e1d8"; e.currentTarget.style.boxShadow = "none"; }}
           />
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <span style={{ width: "60px", fontSize: "14px", color: "#666", textAlign: "center" }}>邮箱</span>
+          <span style={{ width: "60px", fontSize: "14px", color: "#8d918b", textAlign: "center" }}>邮箱</span>
           <input
             type="email"
             value={profile.email}
             disabled
-            style={{ width: isMobile ? "100%" : "320px", padding: "10px 12px", fontSize: "14px", border: "1px solid #e5e7eb", borderRadius: "6px", outline: "none", background: "#f9fafb", color: "#999" }}
+            style={{ width: isMobile ? "100%" : "320px", height: "52px", padding: "0 16px", fontSize: "14px", background: "rgba(255,255,255,.45)", border: "1px solid #e5e7eb", borderRadius: "14px", outline: "none", color: "#999", boxSizing: "border-box" }}
           />
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <span style={{ width: "60px", fontSize: "14px", color: "#666", textAlign: "center" }}>手机号</span>
+          <span style={{ width: "60px", fontSize: "14px", color: "#8d918b", textAlign: "center" }}>手机号</span>
           <input
             type="tel"
             placeholder="选填"
             value={profile.phone}
             onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
-            style={{ width: isMobile ? "100%" : "320px", padding: "10px 12px", fontSize: "14px", border: "1px solid #d1d5db", borderRadius: "6px", outline: "none" }}
+            style={{ width: isMobile ? "100%" : "320px", height: "54px", padding: "0 16px", fontSize: "14px", background: "#fcfaf7", border: "1px solid #e8e1d8", borderRadius: "16px", outline: "none", boxSizing: "border-box" }}
+            onFocus={(e) => { e.currentTarget.style.borderColor = "#29543f"; e.currentTarget.style.boxShadow = "0 0 0 4px rgba(41,84,63,.08)"; }}
+            onBlur={(e) => { e.currentTarget.style.borderColor = "#e8e1d8"; e.currentTarget.style.boxShadow = "none"; }}
           />
         </div>
         {error && <p style={{ color: "#dc2626", fontSize: "13px" }}>{error}</p>}
@@ -85,9 +89,14 @@ export default function ProfileForm() {
             disabled={loading}
             style={{
               width: "140px", padding: "9px", fontSize: "14px", fontWeight: 600,
-              background: "#1a3a2a", color: "#fff", border: "none", borderRadius: "6px",
+              background: "linear-gradient(135deg, #29543f, #183f2c)",
+              color: "#fff", border: "none", borderRadius: "14px",
+              boxShadow: "0 10px 24px rgba(24,63,44,.18)",
               cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.7 : 1,
+              transition: "transform 0.2s ease, background 0.2s ease",
             }}
+            onMouseEnter={(e) => { if (!loading) { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.background = "linear-gradient(135deg, #2f5e46, #204835)"; } }}
+            onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.background = "linear-gradient(135deg, #29543f, #183f2c)"; }}
           >
             {loading ? "保存中..." : "保存修改"}
           </button>

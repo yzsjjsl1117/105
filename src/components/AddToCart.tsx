@@ -38,16 +38,15 @@ export default function AddToCart({ productId }: { productId: string }) {
         onClick={handleAdd}
         disabled={loading || added}
         style={{
-          padding: "10px 24px",
-          fontSize: "14px",
-          fontWeight: 600,
-          border: "none",
+          height: "36px", padding: "0 20px",
+          fontSize: "14px", fontWeight: 600,
+          border: added ? "none" : "1px solid #d9d1c7",
           borderRadius: "6px",
           cursor: loading ? "not-allowed" : "pointer",
-          background: added ? "#16a34a" : "#1a3a2a",
-          color: "#fff",
-          transition: "background 0.3s",
-          opacity: loading ? 0.7 : 1,
+          background: added ? "#16a34a" : "transparent",
+          color: added ? "#fff" : "#555",
+          transition: "all 0.3s",
+          opacity: loading ? 0.7 : 1, whiteSpace: "nowrap",
         }}
       >
         {added ? "已加入 ✓" : loading ? "加入中..." : "加入购物车"}

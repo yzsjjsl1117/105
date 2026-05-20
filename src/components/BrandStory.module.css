@@ -1,0 +1,45 @@
+/* 品牌故事轮播 */
+.story-slide {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.story-slide.active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.story-slide.inactive {
+  opacity: 0;
+  transform: translateX(20px);
+  pointer-events: none;
+}
+
+.story-nav-btn {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: transparent;
+  border: none;
+}
+
+.story-nav-btn svg {
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
+}
+
+.story-nav-btn:hover {
+  opacity: 1 !important;
+}
+
+.story-indicator {
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  background: rgba(0, 0, 0, 0.12);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.story-indicator.active {
+  background: #C8A56A;
+  width: 28px;
+  border-radius: 10px;
+}

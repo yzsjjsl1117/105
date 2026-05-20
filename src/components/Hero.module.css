@@ -1,0 +1,115 @@
+/* Hero 区域 */
+.hero {
+  position: relative;
+  overflow: hidden;
+  filter: brightness(.93) contrast(1.03) saturate(.88);
+  background-color: #0f1113;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    rgba(10,12,16,.12),
+    radial-gradient(circle at left center, rgba(18,16,14,.52) 0%, rgba(12,10,8,.24) 38%, rgba(0,0,0,0) 72%),
+    radial-gradient(circle at left center, rgba(0,0,0,.38) 0%, rgba(0,0,0,.24) 28%, rgba(0,0,0,.10) 48%, rgba(0,0,0,0) 72%),
+    linear-gradient(90deg, rgba(28,24,20,.18) 0%, rgba(60,58,54,.08) 26%, rgba(80,90,108,.10) 52%, rgba(12,20,34,.24) 100%),
+    linear-gradient(to top, rgba(8,10,12,.52) 0%, rgba(8,10,12,.20) 28%, rgba(8,10,12,0) 60%);
+  background-blend-mode: soft-light, normal, normal, overlay, normal;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 3;
+  max-width: 630px;
+  padding-left: 7vw;
+}
+
+.hero-subtitle {
+  font-size: 12px;
+  letter-spacing: .38em;
+  line-height: 1.8;
+  color: rgba(214, 198, 168, 0.58);
+  opacity: .56;
+  margin-bottom: 28px;
+  text-transform: uppercase;
+  text-shadow: 0 0 18px rgba(214,198,168,.08);
+}
+
+.hero-subtitle::before {
+  content: "";
+  display: block;
+  width: 42px;
+  height: 1px;
+  background: rgba(232,214,182,.28);
+  margin-bottom: 16px;
+}
+
+.hero-title {
+  font-family: 'Noto Serif SC', serif;
+  font-size: clamp(56px, 4.5vw, 80px);
+  line-height: 1.08;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  background: linear-gradient(180deg, #E6D5B3 0%, #CDB184 48%, #9E835E 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 42px;
+}
+
+.hero-desc {
+  font-size: 19px;
+  line-height: 2.15;
+  letter-spacing: 1px;
+  color: rgba(222,214,198,.68);
+  max-width: 420px;
+  margin-bottom: 52px;
+}
+
+.hero-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+  letter-spacing: 1px;
+  color: #D8C39E;
+  text-decoration: none;
+  padding: 14px 28px;
+  border-radius: 2px;
+  transition: all .35s ease;
+}
+
+.hero-link::after {
+  content: "—";
+  opacity: .55;
+  transition: .35s ease;
+}
+
+.hero-link:hover {
+  transform: translateY(-1px);
+}
+
+.hero-link:hover::after {
+  transform: translateX(6px);
+}
+
+/* CTA 按钮 */
+.btn-primary {
+  background: transparent;
+  border: 1.5px solid #C8A56A;
+  color: #E7DED0;
+  border-radius: 20px;
+  padding: 16px 36px;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: #C8A56A;
+  color: white !important;
+  transform: translateY(-2px);
+  box-shadow: 0 20px 50px rgba(0,0,0,.08);
+}

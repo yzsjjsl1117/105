@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
 import { useBreakpoint } from "@/lib/useBreakpoint";
 
 const NAV_ITEMS = [
@@ -47,9 +48,9 @@ export default function AdminNavbar() {
           );
         })}
       </div>
-      <a href="/api/auth/signout" style={{ fontSize: isMobile ? "12px" : "13px", color: "#888", textDecoration: "none" }}>
-        退出
-      </a>
+      <button onClick={() => signOut({ redirect: false })} style={{ fontSize: isMobile ? "12px" : "13px", color: "#888", background: "none", border: "none", cursor: "pointer" }}>
+        退出登录
+      </button>
     </nav>
   );
 }

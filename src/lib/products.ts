@@ -13,3 +13,10 @@ export async function getFeaturedProducts() {
     orderBy: { createdAt: "desc" },
   });
 }
+
+export async function getAllProducts() {
+  return prisma.product.findMany({
+    orderBy: { createdAt: "desc" },
+    select: { id: true, name: true, slug: true, price: true, images: true, subtitle: true },
+  });
+}

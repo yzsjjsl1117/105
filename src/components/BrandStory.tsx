@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import styles from "./BrandStory.module.css";
 
 interface Slide {
   id: number;
@@ -14,7 +15,7 @@ interface Slide {
 const slides: Slide[] = [
   {
     id: 1,
-    image: "/images/茶园.png",
+    image: "/images/tea-garden.png",
     englishTitle: "HUANGSHAN TEA · EST. 1875",
     chineseTitle: "源自黄山",
     lines: ["云雾深处，", "茶生山中。"],
@@ -22,7 +23,7 @@ const slides: Slide[] = [
   },
   {
     id: 2,
-    image: "/images/山泉入茶.png",
+    image: "/images/spring-water.png",
     englishTitle: "SPRING WATER",
     chineseTitle: "山泉入茶",
     lines: [
@@ -33,7 +34,7 @@ const slides: Slide[] = [
   },
   {
     id: 3,
-    image: "/images/高山慢养.png",
+    image: "/images/high-altitude.png",
     englishTitle: "HIGH ALTITUDE",
     chineseTitle: "高山慢养",
     lines: ["云雾缓慢生长，", "山风沉淀茶香。"],
@@ -41,7 +42,7 @@ const slides: Slide[] = [
   },
   {
     id: 4,
-    image: "/images/昼夜凝香.png",
+    image: "/images/day-night-aroma.png",
     englishTitle: "DAY & NIGHT",
     chineseTitle: "昼夜凝香",
     lines: [
@@ -55,7 +56,7 @@ const slides: Slide[] = [
   },
   {
     id: 5,
-    image: "/images/山野共生.png",
+    image: "/images/wild-harmony.png",
     englishTitle: "WILD HARMONY",
     chineseTitle: "山野共生",
     lines: ["茶园隐于群山，远离城市喧嚣。"],
@@ -66,7 +67,7 @@ const slides: Slide[] = [
   },
   {
     id: 6,
-    image: "/images/四时养茶.png",
+    image: "/images/four-seasons.png",
     englishTitle: "FOUR SEASONS",
     chineseTitle: "四时养茶",
     lines: [
@@ -181,7 +182,7 @@ export default function BrandStory() {
       {/* Left arrow */}
       <button
         onClick={prev}
-        className="story-nav-btn absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-20 cursor-pointer"
+        className={`${styles["story-nav-btn"]} absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-20 cursor-pointer`}
       >
         <svg
           className="w-12 h-12 md:w-16 md:h-16 text-white"
@@ -196,7 +197,7 @@ export default function BrandStory() {
       {/* Right arrow */}
       <button
         onClick={next}
-        className="story-nav-btn absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-20 cursor-pointer"
+        className={`${styles["story-nav-btn"]} absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-20 cursor-pointer`}
       >
         <svg
           className="w-12 h-12 md:w-16 md:h-16 text-white"
@@ -226,7 +227,7 @@ export default function BrandStory() {
       {/* Slide 1 — in-flow layout with side-by-side content */}
       {slide.id === 1 && (
         <div className="w-full relative z-10">
-          <div key={slide.id} className="story-slide active w-full px-6 py-16">
+          <div key={slide.id} className={`${styles["story-slide"]} ${styles.active} w-full px-6 py-16`}>
             <div style={{ maxWidth: 1280, margin: "0 auto", paddingLeft: 48, paddingRight: 48 }}>
               <div style={{ display: "grid", alignItems: "start", gridTemplateColumns: "1fr 1fr", gap: 40 }}>
                 <div style={{ paddingTop: 60 }}>
@@ -283,7 +284,7 @@ export default function BrandStory() {
 
       {/* Slides 2-6 — full-screen, positioned relative to section */}
       {slide.id !== 1 && (
-        <div key={slide.id} className="story-slide active z-10" style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0, paddingTop: 24 }}>
+        <div key={slide.id} className={`${styles["story-slide"]} ${styles.active} z-10`} style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0, paddingTop: 24 }}>
           <div style={{ position: "relative", width: "100%", height: "100%", overflow: "hidden", background: "#0B120D" }}>
             <img src={slide.image} alt={slide.chineseTitle}
               style={slide.id === 6
@@ -294,7 +295,7 @@ export default function BrandStory() {
               background: slide.id === 2
                 ? "linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.55))"
                 : slide.id === 3
-                ? "radial-gradient(ellipse at 20% 20%, rgba(0,0,0,.12) 0%, transparent 40%), radial-gradient(ellipse at 50% 45%, rgba(0,0,0,.20) 0%, transparent 50%)"
+                ? "radial-gradient(circle at center, rgba(0,0,0,0) 35%, rgba(10,15,12,0.45) 100%), linear-gradient(to bottom, rgba(255,220,180,0.12), rgba(255,255,255,0)), linear-gradient(to top, rgba(0,0,0,0.45), rgba(0,0,0,0))"
                 : slide.id === 4
                 ? "rgba(0,0,0,.25)"
                 : slide.id === 5

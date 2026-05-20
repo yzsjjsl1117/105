@@ -38,7 +38,7 @@ async function main() {
       description:
         "黄山毛峰产于安徽省黄山一带，是中国十大名茶之一。其外形微卷，状似雀舌，绿中泛黄，银毫显露，且带有金黄色鱼叶（俗称黄金片）。",
       price: 298,
-      images: ["/images/黄山毛峰.png"],
+      images: ["/images/huangshan-maofeng.png"],
       stock: 999,
       featured: true,
       specs: "净含量：100g | 产地：安徽黄山 | 保质期：18个月",
@@ -69,7 +69,7 @@ async function main() {
       description:
         "太平猴魁产于安徽省黄山市黄山区（原太平县）一带，为尖茶之极品。其外形两叶抱芽，扁平挺直，自然舒展，白毫隐伏，有「猴魁两头尖，不散不翘不卷边」的美名。",
       price: 398,
-      images: ["/images/太平猴魁.png"],
+      images: ["/images/taiping-houkui.png"],
       stock: 999,
       featured: true,
       specs: "净含量：100g | 产地：安徽黄山 | 保质期：18个月",
@@ -100,7 +100,7 @@ async function main() {
       description:
         "祁门红茶简称祁红，产于安徽省祁门、东至、贵池、石台、黟县等地。祁红是世界三大高香红茶之首，有「茶中英豪」、「群芳最」的美誉，以其独特的「祁门香」闻名于世。",
       price: 268,
-      images: ["/images/祁门红茶.png"],
+      images: ["/images/qimen-black-tea.png"],
       stock: 999,
       featured: true,
       specs: "净含量：100g | 产地：安徽祁门 | 保质期：36个月",
