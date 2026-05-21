@@ -1,16 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth-guards";
 import { prisma } from "@/lib/prisma";
 
 export async function GET() {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return NextResponse.json({ success: false, error: "UNAUTHORIZED" }, { status: 401 });
-  }
-  const user = await prisma.user.findUnique({ where: { id: session.user.id }, select: { role: true } });
-  if (user?.role !== "admin") {
-    return NextResponse.json({ success: false, error: "FORBIDDEN" }, { status: 403 });
-  }
+  const admin = await requireAdmin();
+  if ("error" in admin) return admin.error;
 
   const products = await prisma.product.findMany({
     include: { category: { select: { id: true, name: true } } },
@@ -21,14 +15,8 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return NextResponse.json({ success: false, error: "UNAUTHORIZED" }, { status: 401 });
-  }
-  const user = await prisma.user.findUnique({ where: { id: session.user.id }, select: { role: true } });
-  if (user?.role !== "admin") {
-    return NextResponse.json({ success: false, error: "FORBIDDEN" }, { status: 403 });
-  }
+  const admin = await requireAdmin();
+  if ("error" in admin) return admin.error;
 
   const body = await request.json();
   const { name, subtitle, englishName, slug, description, price, stock, categoryId, images, featured, specs, features, brewing, storage } = body;

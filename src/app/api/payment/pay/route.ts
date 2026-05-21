@@ -1,16 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { requireUser } from "@/lib/auth-guards";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { success: false, error: "UNAUTHORIZED", message: "请先登录" },
-        { status: 401 }
-      );
-    }
+    const user = await requireUser();
+    if ("error" in user) return user.error;
 
     const body = await request.json();
     const { orderId, method } = body as { orderId: string; method: string };
@@ -26,7 +21,7 @@ export async function POST(request: NextRequest) {
       where: { id: orderId },
     });
 
-    if (!order || order.userId !== session.user.id) {
+    if (!order || order.userId !== user.userId) {
       return NextResponse.json(
         { success: false, error: "NOT_FOUND", message: "订单不存在" },
         { status: 404 }

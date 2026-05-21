@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+import { requireUser } from "@/lib/auth-guards";
 import { prisma } from "@/lib/prisma";
 
 const cartInclude = {
@@ -76,14 +77,9 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE() {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { success: false, error: "UNAUTHORIZED", message: "请先登录" },
-        { status: 401 }
-      );
-    }
-    await prisma.cartItem.deleteMany({ where: { userId: session.user.id } });
+    const user = await requireUser();
+    if ("error" in user) return user.error;
+    await prisma.cartItem.deleteMany({ where: { userId: user.userId } });
     return NextResponse.json({ success: true, message: "购物车已清空" });
   } catch (e) {
     console.error("Clear cart error:", e);

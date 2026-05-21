@@ -1,20 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { requireUser } from "@/lib/auth-guards";
 import { prisma } from "@/lib/prisma";
 import { validateName, validatePhone } from "@/lib/validations";
 
 export async function GET() {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { success: false, error: "UNAUTHORIZED", message: "请先登录" },
-        { status: 401 }
-      );
-    }
+    const user = await requireUser();
+    if ("error" in user) return user.error;
 
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
+    const profile = await prisma.user.findUnique({
+      where: { id: user.userId },
       select: { id: true, name: true, email: true, phone: true, createdAt: true },
     });
 
@@ -37,15 +32,11 @@ export async function GET() {
 
 export async function PUT(request: NextRequest) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { success: false, error: "UNAUTHORIZED", message: "请先登录" },
-        { status: 401 }
-      );
-    }
+    const user = await requireUser();
+    if ("error" in user) return user.error;
 
     const body = await request.json();
+
     const { name, phone } = body;
 
     const nameCheck = validateName(name || "");
@@ -58,8 +49,8 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json(phoneCheck, { status: 400 });
     }
 
-    const user = await prisma.user.update({
-      where: { id: session.user.id },
+    const updatedUser = await prisma.user.update({
+      where: { id: user.userId },
       data: { name: name.trim(), phone: phone?.trim() || null },
       select: { id: true, name: true, email: true, phone: true },
     });

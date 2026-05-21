@@ -1,19 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth-guards";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return NextResponse.json({ success: false, error: "UNAUTHORIZED" }, { status: 401 });
-  }
-  const user = await prisma.user.findUnique({ where: { id: session.user.id }, select: { role: true } });
-  if (user?.role !== "admin") {
-    return NextResponse.json({ success: false, error: "FORBIDDEN" }, { status: 403 });
-  }
+  const admin = await requireAdmin();
+  if ("error" in admin) return admin.error;
 
   const { id } = await params;
   const order = await prisma.order.findUnique({

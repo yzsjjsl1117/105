@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { auth } from "@/lib/auth";
+import { requireUser } from "@/lib/auth-guards";
 import { prisma } from "@/lib/prisma";
 import { validatePassword, validatePasswordMatch } from "@/lib/validations";
 import { rateLimit } from "@/lib/rate-limit";
@@ -16,13 +16,8 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { success: false, error: "UNAUTHORIZED", message: "请先登录" },
-        { status: 401 }
-      );
-    }
+    const authed = await requireUser();
+    if ("error" in authed) return authed.error;
 
     const { currentPassword, newPassword, confirmPassword } = await request.json();
 
@@ -43,7 +38,7 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json(matchCheck, { status: 400 });
     }
 
-    const user = await prisma.user.findUnique({ where: { id: session.user.id } });
+    const user = await prisma.user.findUnique({ where: { id: authed.userId } });
     if (!user) {
       return NextResponse.json(
         { success: false, error: "NOT_FOUND", message: "用户不存在" },
@@ -61,7 +56,7 @@ export async function PUT(request: NextRequest) {
 
     const passwordHash = await bcrypt.hash(newPassword, 10);
     await prisma.user.update({
-      where: { id: session.user.id },
+      where: { id: authed.userId },
       data: { passwordHash },
     });
 

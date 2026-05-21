@@ -1,19 +1,14 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { requireUser } from "@/lib/auth-guards";
 import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { success: false, error: "UNAUTHORIZED", message: "请先登录" },
-        { status: 401 }
-      );
-    }
+    const user = await requireUser();
+    if ("error" in user) return user.error;
 
     const orders = await prisma.order.findMany({
-      where: { userId: session.user.id },
+      where: { userId: user.userId },
       include: {
         items: {
           include: {

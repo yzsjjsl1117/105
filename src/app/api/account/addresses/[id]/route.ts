@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { requireUser } from "@/lib/auth-guards";
 import { prisma } from "@/lib/prisma";
 
 export async function PUT(
@@ -7,13 +7,8 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { success: false, error: "UNAUTHORIZED", message: "请先登录" },
-        { status: 401 }
-      );
-    }
+    const user = await requireUser();
+    if ("error" in user) return user.error;
 
     const { id } = await params;
     const body = await request.json();
@@ -27,7 +22,7 @@ export async function PUT(
     }
 
     const existing = await prisma.shippingAddress.findUnique({ where: { id } });
-    if (!existing || existing.userId !== session.user.id) {
+    if (!existing || existing.userId !== user.userId) {
       return NextResponse.json(
         { success: false, error: "NOT_FOUND", message: "地址不存在" },
         { status: 404 }
@@ -37,7 +32,7 @@ export async function PUT(
     await prisma.$transaction(async (tx) => {
       if (isDefault) {
         await tx.shippingAddress.updateMany({
-          where: { userId: session.user.id, isDefault: true },
+          where: { userId: user.userId, isDefault: true },
           data: { isDefault: false },
         });
       }
@@ -73,18 +68,13 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { success: false, error: "UNAUTHORIZED", message: "请先登录" },
-        { status: 401 }
-      );
-    }
+    const user = await requireUser();
+    if ("error" in user) return user.error;
 
     const { id } = await params;
 
     const existing = await prisma.shippingAddress.findUnique({ where: { id } });
-    if (!existing || existing.userId !== session.user.id) {
+    if (!existing || existing.userId !== user.userId) {
       return NextResponse.json(
         { success: false, error: "NOT_FOUND", message: "地址不存在" },
         { status: 404 }

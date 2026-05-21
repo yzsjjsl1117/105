@@ -1,19 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth-guards";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@supabase/supabase-js";
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json({ success: false, error: "UNAUTHORIZED" }, { status: 401 });
-    }
-
-    const user = await prisma.user.findUnique({ where: { id: session.user.id }, select: { role: true } });
-    if (user?.role !== "admin") {
-      return NextResponse.json({ success: false, error: "FORBIDDEN" }, { status: 403 });
-    }
+    const admin = await requireAdmin();
+    if ("error" in admin) return admin.error;
 
     const formData = await request.formData();
     const file = formData.get("file") as File;

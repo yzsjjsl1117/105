@@ -1,17 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { requireUser } from "@/lib/auth-guards";
 import { prisma } from "@/lib/prisma";
 import { cancelExpiredOrders } from "@/lib/orders";
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { success: false, error: "UNAUTHORIZED", message: "请先登录" },
-        { status: 401 }
-      );
-    }
+    const user = await requireUser();
+    if ("error" in user) return user.error;
 
     const body = await request.json();
     const { addressId, items, paymentMethod } = body as {
@@ -36,7 +31,7 @@ export async function POST(request: NextRequest) {
 
     // Verify address ownership
     const address = await prisma.shippingAddress.findUnique({ where: { id: addressId } });
-    if (!address || address.userId !== session.user.id) {
+    if (!address || address.userId !== user.userId) {
       return NextResponse.json(
         { success: false, error: "NOT_FOUND", message: "地址不存在" },
         { status: 404 }
@@ -44,44 +39,42 @@ export async function POST(request: NextRequest) {
     }
 
     const order = await prisma.$transaction(async (tx) => {
-      // 1. Validate stock & calculate total
       let total = 0;
-      const productUpdates: { id: string; price: number; quantity: number }[] = [];
+      const orderItems: { productId: string; quantity: number; price: number }[] = [];
 
       for (const item of items) {
-        const product = await tx.product.findUnique({ where: { id: item.productId } });
-        if (!product) {
-          throw new Error(`OUT_OF_STOCK:产品「${item.productId}」不存在`);
-        }
-        if (product.stock < item.quantity) {
+        const result = await tx.product.updateMany({
+          where: { id: item.productId, stock: { gte: item.quantity } },
+          data: { stock: { decrement: item.quantity } },
+        });
+
+        if (result.count === 0) {
+          const product = await tx.product.findUnique({
+            where: { id: item.productId },
+            select: { name: true, stock: true },
+          });
+          if (!product) {
+            throw new Error(`OUT_OF_STOCK:产品「${item.productId}」不存在`);
+          }
           throw new Error(`OUT_OF_STOCK:产品「${product.name}」库存不足，仅剩 ${product.stock} 件`);
         }
-        total += Number(product.price) * item.quantity;
-        productUpdates.push({ id: product.id, price: Number(product.price), quantity: item.quantity });
-      }
 
-      // 2. Decrement stock
-      for (const pu of productUpdates) {
-        await tx.product.update({
-          where: { id: pu.id },
-          data: { stock: { decrement: pu.quantity } },
+        const product = await tx.product.findUnique({
+          where: { id: item.productId },
+          select: { price: true },
         });
+        const price = Number(product!.price);
+        total += price * item.quantity;
+        orderItems.push({ productId: item.productId, quantity: item.quantity, price });
       }
 
-      // 3. Create order
       const newOrder = await tx.order.create({
         data: {
-          userId: session.user.id,
+          userId: user.userId,
           total,
           status: "pending_payment",
           paymentMethod: paymentMethod || "",
-          items: {
-            create: productUpdates.map((pu) => ({
-              productId: pu.id,
-              quantity: pu.quantity,
-              price: pu.price,
-            })),
-          },
+          items: { create: orderItems },
         },
         include: {
           items: {
@@ -92,7 +85,6 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      // 4. Create payment record
       await tx.paymentRecord.create({
         data: {
           orderId: newOrder.id,
@@ -102,10 +94,9 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      // 5. Clear cart items that were ordered
       const productIds = items.map((i) => i.productId);
       await tx.cartItem.deleteMany({
-        where: { userId: session.user.id, productId: { in: productIds } },
+        where: { userId: user.userId, productId: { in: productIds } },
       });
 
       return newOrder;
@@ -129,18 +120,13 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { success: false, error: "UNAUTHORIZED", message: "请先登录" },
-        { status: 401 }
-      );
-    }
+    const user = await requireUser();
+    if ("error" in user) return user.error;
 
-    await cancelExpiredOrders(session.user.id);
+    await cancelExpiredOrders(user.userId);
 
     const orders = await prisma.order.findMany({
-      where: { userId: session.user.id },
+      where: { userId: user.userId },
       include: {
         items: {
           include: {

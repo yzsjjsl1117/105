@@ -1056,3 +1056,78 @@ GitHub Push → Vercel 自动检测 → npm install + prisma generate → next b
                                                                   ↓
                                               34 个页面全部编译通过（TypeScript 零错误）
 ```
+
+---
+
+## 2026-05-21 Auth Guards 重构记录
+
+### 问题
+
+管理后台 10 个 API handler 各自重复相同的 auth + role 检查（8 行 × 10 = 80 行），约 20 个用户 API handler 各自重复相同的 session 检查（4 行 × 20 = 80 行）。总计约 120 行重复的权限校验代码，且新增路由时有遗漏权限检查的安全风险。
+
+### 方案
+
+抽取 `requireAdmin()` / `requireUser()` 两个辅助函数，返回判别联合类型 `{ userId: string } | { error: NextResponse }`，TypeScript 编译时强制调用方处理 auth 失败。
+
+### 新增文件
+
+| 文件 | 用途 |
+|------|------|
+| `src/lib/auth-guards.ts` | `requireAdmin()` + `requireUser()`，判别联合返回类型 |
+
+### 修改文件
+
+**管理后台路由（7 个文件 / 10 个 handler）** — 8 行 → 2 行：
+`src/app/api/admin/stats/route.ts`、`admin/upload/route.ts`、`admin/products/route.ts`、`admin/products/[id]/route.ts`、`admin/orders/route.ts`、`admin/orders/[id]/route.ts`、`admin/orders/[id]/status/route.ts`
+
+**用户路由（12 个文件 / ~17 个 handler）** — 4 行 → 2 行：
+`src/app/api/account/route.ts`、`account/password/route.ts`、`account/addresses/route.ts`、`account/addresses/[id]/route.ts`、`account/orders/route.ts`、`cart/route.ts`（DELETE）、`cart/[id]/route.ts`、`cart/merge/route.ts`、`orders/route.ts`、`orders/[id]/route.ts`、`orders/[id]/cancel/route.ts`、`payment/pay/route.ts`
+
+### 未修改
+
+- `cart/route.ts` 的 GET/POST handler — 游客可选 auth，不适用 `requireUser()`
+- Server Component 中的 `auth()` 调用 — 需要更细粒度的 session 信息，不在此次重构范围
+
+### 验证
+
+- `tsc --noEmit` — 零类型错误
+- Grep 确认仅 `cart/route.ts` 两处游客分支保留手写模式
+
+### OpenSpec 归档
+
+- Change `extract-auth-guards` 已归档至 `openspec/changes/archive/2026-05-21-extract-auth-guards/`
+- 1 个能力规格同步至 `openspec/specs/auth-guards/`
+
+---
+
+## 2026-05-21 原子库存校验实现记录
+
+### 问题
+
+`POST /api/orders` 事务内库存校验分两步：SELECT → 应用层检查 `stock >= quantity` → UPDATE `stock = stock - quantity`。在 PostgreSQL READ COMMITTED 隔离级别下，两个并发事务可能同时通过应用层检查，存在 TOCTOU 超卖风险。
+
+### 方案
+
+用 `prisma.product.updateMany({ where: { id, stock: { gte: quantity } }, data: { stock: { decrement: quantity } } })` 替代 SELECT + UPDATE 两步模式。`updateMany` 生成单条原子 SQL：
+
+```sql
+UPDATE "Product" SET "stock" = "stock" - $qty
+WHERE "id" = $id AND "stock" >= $qty
+```
+
+`result.count === 0` 时补查产品信息，区分"产品不存在"和"库存不足"，错误信息保持兼容。
+
+### 修改文件
+
+| 文件 | 变更 |
+|------|------|
+| `src/app/api/orders/route.ts` | POST handler 事务内：2 个 for-of 循环合并为 1 个，`updateMany` 替代 SELECT+UPDATE |
+
+### 验证
+
+- `tsc --noEmit` — 零类型错误
+
+### OpenSpec 归档
+
+- Change `atomic-stock-check` 已归档至 `openspec/changes/archive/2026-05-21-atomic-stock-check/`
+- 1 个新增 Requirement 同步至 `openspec/specs/checkout/spec.md`

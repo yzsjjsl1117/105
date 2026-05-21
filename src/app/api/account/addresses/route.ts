@@ -1,19 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { requireUser } from "@/lib/auth-guards";
 import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { success: false, error: "UNAUTHORIZED", message: "请先登录" },
-        { status: 401 }
-      );
-    }
+    const user = await requireUser();
+    if ("error" in user) return user.error;
 
     const addresses = await prisma.shippingAddress.findMany({
-      where: { userId: session.user.id },
+      where: { userId: user.userId },
       orderBy: { isDefault: "desc" },
     });
 
@@ -29,13 +24,8 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { success: false, error: "UNAUTHORIZED", message: "请先登录" },
-        { status: 401 }
-      );
-    }
+    const user = await requireUser();
+    if ("error" in user) return user.error;
 
     const body = await request.json();
     const { name, phone, province, city, district, detail, isDefault } = body;
@@ -50,14 +40,14 @@ export async function POST(request: NextRequest) {
     await prisma.$transaction(async (tx) => {
       if (isDefault) {
         await tx.shippingAddress.updateMany({
-          where: { userId: session.user.id, isDefault: true },
+          where: { userId: user.userId, isDefault: true },
           data: { isDefault: false },
         });
       }
 
       await tx.shippingAddress.create({
         data: {
-          userId: session.user.id,
+          userId: user.userId,
           name: name.trim(),
           phone: phone.trim(),
           province: province.trim(),
@@ -70,7 +60,7 @@ export async function POST(request: NextRequest) {
     });
 
     const address = await prisma.shippingAddress.findFirst({
-      where: { userId: session.user.id },
+      where: { userId: user.userId },
       orderBy: { isDefault: "desc" },
     });
 

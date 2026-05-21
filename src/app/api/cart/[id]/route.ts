@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { requireUser } from "@/lib/auth-guards";
 import { prisma } from "@/lib/prisma";
 
 export async function PUT(
@@ -7,13 +7,8 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { success: false, error: "UNAUTHORIZED", message: "请先登录" },
-        { status: 401 }
-      );
-    }
+    const user = await requireUser();
+    if ("error" in user) return user.error;
 
     const { id } = await params;
     const { quantity } = await request.json();
@@ -26,7 +21,7 @@ export async function PUT(
     }
 
     const item = await prisma.cartItem.findUnique({ where: { id } });
-    if (!item || item.userId !== session.user.id) {
+    if (!item || item.userId !== user.userId) {
       return NextResponse.json(
         { success: false, error: "NOT_FOUND", message: "购物车项不存在" },
         { status: 404 }
@@ -49,18 +44,13 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { success: false, error: "UNAUTHORIZED", message: "请先登录" },
-        { status: 401 }
-      );
-    }
+    const user = await requireUser();
+    if ("error" in user) return user.error;
 
     const { id } = await params;
 
     const item = await prisma.cartItem.findUnique({ where: { id } });
-    if (!item || item.userId !== session.user.id) {
+    if (!item || item.userId !== user.userId) {
       return NextResponse.json(
         { success: false, error: "NOT_FOUND", message: "购物车项不存在" },
         { status: 404 }

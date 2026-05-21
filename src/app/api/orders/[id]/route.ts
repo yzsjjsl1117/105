@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { requireUser } from "@/lib/auth-guards";
 import { prisma } from "@/lib/prisma";
 import { cancelExpiredOrders } from "@/lib/orders";
 
@@ -8,15 +8,10 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { success: false, error: "UNAUTHORIZED", message: "请先登录" },
-        { status: 401 }
-      );
-    }
+    const user = await requireUser();
+    if ("error" in user) return user.error;
 
-    await cancelExpiredOrders(session.user.id);
+    await cancelExpiredOrders(user.userId);
 
     const { id } = await params;
     const order = await prisma.order.findUnique({
@@ -30,7 +25,7 @@ export async function GET(
       },
     });
 
-    if (!order || order.userId !== session.user.id) {
+    if (!order || order.userId !== user.userId) {
       return NextResponse.json(
         { success: false, error: "NOT_FOUND", message: "订单不存在" },
         { status: 404 }
