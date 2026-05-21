@@ -94,6 +94,100 @@ body > * {
   transform: scaleX(1);
 }
 
+/* 后台导航链接 */
+.admin-nav-link {
+  position: relative;
+  padding-bottom: 4px;
+  color: #888;
+  font-size: 14px;
+  text-decoration: none;
+  transition: color .25s ease;
+}
+
+.admin-nav-link::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 0;
+  height: 1.5px;
+  background: #1a3a2a;
+  transform: translateX(-50%);
+  transition: width .25s ease;
+}
+
+.admin-nav-link:hover {
+  color: #1a3a2a;
+}
+
+.admin-nav-link:hover::after {
+  width: 100%;
+}
+
+.admin-nav-link.active {
+  color: #1a3a2a;
+  font-weight: 600;
+}
+
+.admin-nav-link.active::after {
+  width: 100%;
+}
+
+/* 顶部导航右侧链接 — ShopNavbar 共享 */
+.top-link {
+  position: relative;
+  padding: 6px 4px;
+  color: #6f746c;
+  font-size: 14px;
+  text-decoration: none;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: color .28s ease, transform .28s ease;
+}
+
+.top-link:hover {
+  color: #1f4f3a;
+  transform: translateY(-1px);
+}
+
+.top-link::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 0;
+  height: 1px;
+  background: #1f4f3a;
+  transform: translateX(-50%);
+  transition: width .28s ease;
+}
+
+.top-link:hover::after {
+  width: 100%;
+}
+
+.top-link.active {
+  color: #b99045;
+  font-weight: 500;
+}
+
+.top-link.active:hover {
+  color: #b99045;
+}
+
+.top-link.active:hover::after {
+  background: #b99045;
+}
+
+.top-link.logout:hover {
+  color: #9a5a4b;
+}
+
+.top-link.logout:hover::after {
+  background: #9a5a4b;
+}
+
 /* 玻璃态卡片 — 跨组件共享 */
 .glass-card {
   background: rgba(255, 255, 255, 0.85);

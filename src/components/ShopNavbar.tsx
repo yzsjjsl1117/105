@@ -34,15 +34,24 @@ export default function ShopNavbar() {
     >
       <div style={{ maxWidth: 1280, margin: "0 auto", padding: isMobile ? "8px 16px" : "8px 64px 8px 44px" }}>
         <div className="flex items-center justify-between">
-          {/* 左侧：品牌（点击返回首页） */}
-          <Link href="/" style={{ display: "flex", alignItems: "center", gap: "12px", textDecoration: "none" }}>
-            <img
-              src="/images/LOGO_transparent.png"
-              alt="瀹岭"
-              className="h-10 w-auto shrink-0"
-            />
-            <span className="font-serif-cn font-semibold text-[#1F2D24]" style={{ fontSize: isMobile ? "16px" : "20px" }}>瀹岭</span>
-          </Link>
+          {/* 左侧：品牌（点击返回首页） + 发现好茶 */}
+          <div style={{ display: "flex", alignItems: "center", gap: isMobile ? "16px" : "32px" }}>
+            <Link href="/" style={{ display: "flex", alignItems: "center", gap: "12px", textDecoration: "none" }}>
+              <img
+                src="/images/LOGO_transparent.png"
+                alt="瀹岭"
+                className="h-10 w-auto shrink-0"
+              />
+              <span className="font-serif-cn font-semibold text-[#1F2D24]" style={{ fontSize: isMobile ? "16px" : "20px" }}>瀹岭</span>
+            </Link>
+            <Link
+              href="/#products"
+              className="nav-link"
+              style={{ fontSize: isMobile ? "14px" : "16px", fontFamily: '"Source Han Serif SC", "Noto Serif SC", serif', paddingTop: "3px" }}
+            >
+              发现好茶
+            </Link>
+          </div>
 
           {/* 右侧：购物车 + 登录/注册 */}
           <div style={{ display: "flex", alignItems: "center", gap: isMobile ? "12px" : "20px" }}>
@@ -51,31 +60,44 @@ export default function ShopNavbar() {
 
             {/* 登录状态 */}
             {session ? (
-              <div style={{ display: "flex", alignItems: "center", gap: isMobile ? "8px" : "16px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: isMobile ? "8px" : "16px", fontFamily: '"Source Han Sans SC", "Noto Sans SC", sans-serif' }}>
                 <Link
                   href="/account"
-                  style={{ fontSize: isMobile ? "12px" : "14px", color: "#1F2D24", textDecoration: "none" }}
+                  className="top-link"
+                  style={{ fontSize: isMobile ? "12px" : "14px" }}
                 >
                   {session.user?.name}
                 </Link>
+                {session.user?.role === "admin" && (
+                  <Link
+                    href="/admin"
+                    className="top-link active"
+                    style={{ fontSize: isMobile ? "12px" : "14px" }}
+                  >
+                    后台
+                  </Link>
+                )}
                 <button
-                  onClick={() => signOut({ redirect: false })}
-                  style={{ fontSize: isMobile ? "12px" : "14px", color: "#888", background: "none", border: "none", cursor: "pointer" }}
+                  onClick={() => signOut({ callbackUrl: "/auth/login" })}
+                  className="top-link logout"
+                  style={{ fontSize: isMobile ? "12px" : "14px" }}
                 >
                   退出登录
                 </button>
               </div>
             ) : (
-              <div style={{ display: "flex", alignItems: "center", gap: isMobile ? "8px" : "16px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: isMobile ? "8px" : "16px", fontFamily: '"Source Han Sans SC", "Noto Sans SC", sans-serif' }}>
                 <Link
                   href="/auth/login"
-                  style={{ fontSize: isMobile ? "12px" : "14px", color: "#1F2D24", textDecoration: "none" }}
+                  className="top-link"
+                  style={{ fontSize: isMobile ? "12px" : "14px" }}
                 >
                   登录
                 </Link>
                 <Link
                   href="/auth/register"
-                  style={{ fontSize: isMobile ? "12px" : "14px", color: "#1F2D24", textDecoration: "none" }}
+                  className="top-link"
+                  style={{ fontSize: isMobile ? "12px" : "14px" }}
                 >
                   注册
                 </Link>

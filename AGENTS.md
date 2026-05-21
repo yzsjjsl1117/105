@@ -1131,3 +1131,71 @@ WHERE "id" = $id AND "stock" >= $qty
 
 - Change `atomic-stock-check` 已归档至 `openspec/changes/archive/2026-05-21-atomic-stock-check/`
 - 1 个新增 Requirement 同步至 `openspec/specs/checkout/spec.md`
+
+---
+
+## 2026-05-22 导航栏与个人中心打磨记录
+
+### 管理员前台入口
+
+- **问题**：管理员登录后无法从 UI 进入 `/admin` 后台，只能手动改 URL
+- **方案**：JWT callback 注入 role → session 透传 → ShopNavbar 条件渲染
+- 修改 `src/lib/auth.ts`：JWT callback 查 DB 获取 role 写入 token；session callback 传递 role 给客户端
+- 修改 `src/types/next-auth.d.ts`：Session.user 新增 `role?: string`
+- 修改 `src/components/ShopNavbar.tsx`：`role === "admin"` 时在用户名旁显示金色「后台」链接
+
+### 后台导航栏 (AdminNavbar) 改进
+
+- 新增「← 返回前台」链接（跳转 `/account`），解决后台无返回入口问题
+- 结构对齐 ShopNavbar：加 `maxWidth: 1280` 居中容器，防止两侧元素过分分散
+- 后台导航项（概览/商品管理/订单管理）添加 `.admin-nav-link`：hover 变色 + 底部细线动效，当前页常驻深绿底线
+- 右侧「返回前台」「退出登录」复用 `.top-link` / `.top-link.logout` 动效
+
+### 退出登录行为统一
+
+- `ShopNavbar` 和 `AdminNavbar` 的 `signOut` 从 `redirect: false` 改为 `callbackUrl: "/auth/login"`，退出后直接跳转登录页
+
+### ShopNavbar 导航按钮动效
+
+新增 CSS 类 `.top-link` / `.top-link.active` / `.top-link.logout`（`src/app/globals.css`）：
+
+| 类名 | 默认色 | Hover |
+|------|--------|-------|
+| `.top-link` | `#6f746c` | 变深绿 `#1f4f3a` + 上浮 1px + 底部细线展开 |
+| `.top-link.active` | 金色 `#b99045` + 加粗 | 保持金色 + 金色细线展开 |
+| `.top-link.logout` | `#6f746c` | 变暖棕 `#9a5a4b` + 棕色细线展开 |
+
+应用于 ShopNavbar 右侧全部链接（用户名/后台/退出登录/登录/注册）和 AdminNavbar 右侧链接。
+
+### 「发现好茶」按钮
+
+- ShopNavbar 左侧品牌名右侧新增「发现好茶」链接，跳转 `/#products`
+- 复用 `.nav-link` hover 下划线动效
+- 字体：`Source Han Serif SC` → `Noto Serif SC` → `serif`
+- 字号：移动端 14px / 桌面端 16px，`paddingTop: 3px` 微调垂直对齐
+
+### 右侧字体统一
+
+- ShopNavbar 右侧所有按钮字体：`Source Han Sans SC` → `Noto Sans SC` → `sans-serif`
+
+### 个人中心表单修复
+
+- **API bug 修复**：`GET/PUT /api/account` 返回了 `requireUser()` 的 `{ userId }` 而非实际查询结果 `profile`/`updatedUser`，导致前端收不到 `name`/`email`/`phone`，输入框全部为空
+- **受控组件警告修复**：`ProfileForm` 中 `...d.data` 展开时 `null` 字段覆盖初始空字符串，改为显式取值 `d.data.name || ""` 兜底
+- 用户名输入框文字颜色 `#8d918b`（灰色），邮箱 `#999`（灰色不可编辑），手机号有值时灰色、无值时 placeholder「选填」
+
+### 修改文件
+
+| 文件 | 变更 |
+|------|------|
+| `src/lib/auth.ts` | JWT callback 查 role 注入 token，session callback 传递 role |
+| `src/types/next-auth.d.ts` | Session.user 新增 `role?: string` |
+| `src/components/ShopNavbar.tsx` | 新增「后台」「发现好茶」链接；右侧按钮迁移至 `.top-link` 类；退出重定向；字体分工 |
+| `src/components/AdminNavbar.tsx` | 新增「返回前台」链接；加 maxWidth 容器；导航项迁移至 `.admin-nav-link`；右侧复用 `.top-link`；退出重定向 |
+| `src/app/globals.css` | 新增 `.top-link` / `.top-link.active` / `.top-link.logout` / `.admin-nav-link` 四套样式 |
+| `src/app/api/account/route.ts` | GET 返回 `profile` 而非 `user`；PUT 返回 `updatedUser` 而非 `user` |
+| `src/app/account/ProfileForm.tsx` | 修复受控组件警告；输入框文字灰色；手机号条件 placeholder |
+
+### 验证
+
+- `tsc --noEmit` — 零类型错误

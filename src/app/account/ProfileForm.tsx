@@ -19,7 +19,7 @@ export default function ProfileForm() {
   useEffect(() => {
     fetch("/api/account")
       .then((r) => r.json())
-      .then((d) => { if (d.success) setProfile({ ...d.data, phone: d.data.phone || "" }); });
+      .then((d) => { if (d.success) setProfile({ name: d.data.name || "", email: d.data.email || "", phone: d.data.phone || "" }); });
   }, []);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -55,7 +55,7 @@ export default function ProfileForm() {
             value={profile.name}
             onChange={(e) => setProfile({ ...profile, name: e.target.value })}
             required
-            style={{ width: isMobile ? "100%" : "320px", height: "54px", padding: "0 16px", fontSize: "14px", background: "#fcfaf7", border: "1px solid #e8e1d8", borderRadius: "16px", outline: "none", boxSizing: "border-box" }}
+            style={{ width: isMobile ? "100%" : "320px", height: "54px", padding: "0 16px", fontSize: "14px", color: "#8d918b", background: "#fcfaf7", border: "1px solid #e8e1d8", borderRadius: "16px", outline: "none", boxSizing: "border-box" }}
             onFocus={(e) => { e.currentTarget.style.borderColor = "#29543f"; e.currentTarget.style.boxShadow = "0 0 0 4px rgba(41,84,63,.08)"; }}
             onBlur={(e) => { e.currentTarget.style.borderColor = "#e8e1d8"; e.currentTarget.style.boxShadow = "none"; }}
           />
@@ -66,17 +66,17 @@ export default function ProfileForm() {
             type="email"
             value={profile.email}
             disabled
-            style={{ width: isMobile ? "100%" : "320px", height: "52px", padding: "0 16px", fontSize: "14px", background: "rgba(255,255,255,.45)", border: "1px solid #e5e7eb", borderRadius: "14px", outline: "none", color: "#999", boxSizing: "border-box" }}
+            style={{ width: isMobile ? "100%" : "320px", height: "52px", padding: "0 16px", fontSize: "14px", color: "#999", background: "rgba(255,255,255,.45)", border: "1px solid #e5e7eb", borderRadius: "14px", outline: "none", boxSizing: "border-box" }}
           />
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <span style={{ width: "60px", fontSize: "14px", color: "#8d918b", textAlign: "center" }}>手机号</span>
           <input
             type="tel"
-            placeholder="选填"
+            placeholder={profile.phone ? undefined : "选填"}
             value={profile.phone}
             onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
-            style={{ width: isMobile ? "100%" : "320px", height: "54px", padding: "0 16px", fontSize: "14px", background: "#fcfaf7", border: "1px solid #e8e1d8", borderRadius: "16px", outline: "none", boxSizing: "border-box" }}
+            style={{ width: isMobile ? "100%" : "320px", height: "54px", padding: "0 16px", fontSize: "14px", color: profile.phone ? "#8d918b" : "#5f655f", background: "#fcfaf7", border: "1px solid #e8e1d8", borderRadius: "16px", outline: "none", boxSizing: "border-box" }}
             onFocus={(e) => { e.currentTarget.style.borderColor = "#29543f"; e.currentTarget.style.boxShadow = "0 0 0 4px rgba(41,84,63,.08)"; }}
             onBlur={(e) => { e.currentTarget.style.borderColor = "#e8e1d8"; e.currentTarget.style.boxShadow = "none"; }}
           />

@@ -5,22 +5,22 @@ import { validateName, validatePhone } from "@/lib/validations";
 
 export async function GET() {
   try {
-    const user = await requireUser();
-    if ("error" in user) return user.error;
+    const session = await requireUser();
+    if ("error" in session) return session.error;
 
     const profile = await prisma.user.findUnique({
-      where: { id: user.userId },
+      where: { id: session.userId },
       select: { id: true, name: true, email: true, phone: true, createdAt: true },
     });
 
-    if (!user) {
+    if (!profile) {
       return NextResponse.json(
         { success: false, error: "NOT_FOUND", message: "用户不存在" },
         { status: 404 }
       );
     }
 
-    return NextResponse.json({ success: true, data: user });
+    return NextResponse.json({ success: true, data: profile });
   } catch (e) {
     console.error("Get profile error:", e);
     return NextResponse.json(
@@ -32,8 +32,8 @@ export async function GET() {
 
 export async function PUT(request: NextRequest) {
   try {
-    const user = await requireUser();
-    if ("error" in user) return user.error;
+    const session = await requireUser();
+    if ("error" in session) return session.error;
 
     const body = await request.json();
 
@@ -50,12 +50,12 @@ export async function PUT(request: NextRequest) {
     }
 
     const updatedUser = await prisma.user.update({
-      where: { id: user.userId },
+      where: { id: session.userId },
       data: { name: name.trim(), phone: phone?.trim() || null },
       select: { id: true, name: true, email: true, phone: true },
     });
 
-    return NextResponse.json({ success: true, data: user });
+    return NextResponse.json({ success: true, data: updatedUser });
   } catch (e) {
     console.error("Update profile error:", e);
     return NextResponse.json(
